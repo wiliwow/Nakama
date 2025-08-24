@@ -1,0 +1,40 @@
+[package]
+name = "nakama"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "nakama_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+screenshots = "0.8.10"
+rdev = "0.5"
+nix = "0.26.2"
+crossbeam-channel = "0.5.6"
+chrono = "0.4.20"
+tauri-plugin-mic-recorder = "2.0.0"
+alsa = "0.9.1"
+bytemuck = "1.15.0"
+enigo = "0.5.0"
+candle-core = { version = "0.4.0", features = ["cuda"] }
+candle-nn = "0.4.0"
+hf-hub = { version = "0.4.3", features = ["tokio"] }
+rand = "0.8.5"
+rand_distr = "0.4.3"
+half = { version = "2.3", features = ["rand_distr", "num-traits"] }
+cudarc = "=0.10.0"
