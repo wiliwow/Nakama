@@ -1,4 +1,4 @@
-import "./App.css";
+import "./style.css";
 import NightSky from "./components/NightSky";
 import Header from "./components/Header";
 import ChatContainer from "./components/ChatContainer";

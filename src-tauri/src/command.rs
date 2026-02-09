@@ -5,8 +5,7 @@ use serde::Serialize;
 //Command to get the user' input from the chat
 #[derive(Debug, Serialize)]
 pub enum Sender {
-    User,
-    Ai,
+    User
 }
 
 #[derive(Debug, Serialize)]

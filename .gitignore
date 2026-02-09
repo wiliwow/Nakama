@@ -22,3 +22,23 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Recording files and logs
+recordings/**/*.mp4
+recordings/**/*.txt
+src-tauri/key_log.txt
+
+# CUDA and system files
+*.run
+cuda-keyring*.deb
+
+# Temporary/test files
+bar.txt
+foo.txt
+index
+IMPLEMENTATION.md
+QUICKSTART.md
+
+# Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/

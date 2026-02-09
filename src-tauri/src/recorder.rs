@@ -1,21 +1,19 @@
 use std::{
-    fs::{self, OpenOptions, File},
+    fs::{self, OpenOptions},
     io::Write,
     path::Path,
     process::{Command, Stdio},
     sync::atomic::{AtomicBool, Ordering},
-    sync::{Arc, Mutex},
     thread,
     time::{Duration, Instant},
 };
-use alsa::pcm::{Access, Format, HwParams, PCM};
 use chrono::Local;
 use crossbeam_channel::tick;
-use rdev::{listen, Event, EventType, Key};
+use rdev::{listen, Event, EventType};
 use screenshots::{image::EncodableLayout, Screen};
+use serde::Serialize;
 fn key_logger(event: Event, file_path: &Path) {
     if let EventType::KeyPress(key) = event.event_type {
-        
         let timestamp = Local::now(); // Get the current date and time
 
         let mut file = OpenOptions::new()
@@ -29,39 +27,31 @@ fn key_logger(event: Event, file_path: &Path) {
     }
 }
 
-static RUNNING: AtomicBool = AtomicBool::new(true);
+static RUNNING: AtomicBool = AtomicBool::new(false);
 
-fn start_hotkey_listener() {
-    let ctrl = Arc::new(Mutex::new(false));
-    let alt = Arc::new(Mutex::new(false));
-    let shift = Arc::new(Mutex::new(false));
-
-    let ctrl_clone = Arc::clone(&ctrl);
-    let alt_clone = Arc::clone(&alt);
-    let shift_clone = Arc::clone(&shift);
-
-    thread::spawn(move || {
-        listen(move |event: Event| {
-            match event.event_type {
-                EventType::KeyPress(Key::ControlLeft) | EventType::KeyPress(Key::ControlRight) => *ctrl_clone.lock().unwrap() = true,
-                EventType::KeyRelease(Key::ControlLeft) | EventType::KeyRelease(Key::ControlRight) => *ctrl_clone.lock().unwrap() = false,
-                EventType::KeyPress(Key::Alt) => *alt_clone.lock().unwrap() = true,
-                EventType::KeyRelease(Key::Alt) => *alt_clone.lock().unwrap() = false,
-                EventType::KeyPress(Key::ShiftLeft) | EventType::KeyPress(Key::ShiftRight) => *shift_clone.lock().unwrap() = true,
-                EventType::KeyRelease(Key::ShiftLeft) | EventType::KeyRelease(Key::ShiftRight) => *shift_clone.lock().unwrap() = false,
-                EventType::KeyPress(Key::KeyC) => {
-                    if *ctrl_clone.lock().unwrap() && *alt_clone.lock().unwrap() && *shift_clone.lock().unwrap() {
-                        RUNNING.store(false, Ordering::SeqCst);
-                    }
-                }
-                _ => {}
-            }
-        }).expect("Error listening for hotkey");
-    });
+#[derive(Serialize, Clone)]
+pub struct RecordingInfo {
+    pub video_path: String,
+    pub keylog_path: String,
+    pub duration_seconds: u64,
 }
 
+use once_cell::sync::Lazy;
+use std::sync::Mutex as StdMutex;
+
+static LAST_RECORDING: Lazy<StdMutex<Option<RecordingInfo>>> = Lazy::new(|| StdMutex::new(None));
 
 pub fn start_screen_recording() -> Result<(), String> {
+    // Check that `ffmpeg` is available before spawning the recording thread.
+    match Command::new("ffmpeg").arg("-version").stdout(Stdio::null()).stderr(Stdio::null()).status() {
+        Ok(status) if status.success() => {}
+        Ok(_) => return Err("ffmpeg is present but returned non-zero when queried".into()),
+        Err(_) => return Err("ffmpeg not found in PATH. Install ffmpeg and ensure it's available in PATH".into()),
+    }
+
+    // Set running flag
+    RUNNING.store(true, Ordering::SeqCst);
+
     thread::spawn(|| {
         // Ensure recordings directory exists in project root
         let recordings_path = Path::new("../recordings");
@@ -75,20 +65,10 @@ pub fn start_screen_recording() -> Result<(), String> {
         let log_file_path = recordings_path.join(format!("output_{}.txt", timestamp));
 
         // Start the keylogger in a separate thread
+        let keylog_path_clone = log_file_path.clone();
         thread::spawn(move || {
             listen(move |event: Event| {
-                if let EventType::KeyPress(key) = event.event_type {
-                    let timestamp = Local::now(); // Get the current date and time
-
-                    let mut file = OpenOptions::new()
-                        .create(true)
-                        .append(true)
-                        .open(&log_file_path)
-                        .expect("Failed to open key log file");
-
-                    writeln!(file, "Key {:?} pressed at {}", key, timestamp)
-                        .expect("Failed to write to key log file");
-                }
+                key_logger(event, &keylog_path_clone);
             })
             .expect("Error listening for key events");
         });
@@ -98,30 +78,36 @@ pub fn start_screen_recording() -> Result<(), String> {
         let primary = screens.first().ok_or("No screens available").unwrap();
         let (width, height) = (primary.display_info.width, primary.display_info.height);
 
-        // Start FFmpeg process
-        let mut ffmpeg = Command::new("ffmpeg")
+        // Start FFmpeg process capturing video only (no audio for now)
+        // Video-only approach avoids ALSA audio issues
+        let mut ffmpeg = match Command::new("ffmpeg")
             .args(&[
                 "-y",
                 "-f", "rawvideo",
                 "-pix_fmt", "bgra",
-                "-s", &format!("{}x{}", width / 2, height / 2), // Reduce resolution by half
+                "-s", &format!("{}x{}", width, height),
+                "-framerate", "20",
                 "-i", "-",
-                "-r", "20", // Reduce frame rate to 20 FPS
                 "-c:v", "libx264",
-                "-preset", "ultrafast", // Use ultrafast preset for better performance
-                "-crf", "30", // Increase CRF (higher value = lower quality)
-                "-b:v", "500k", // Set bitrate to 500kbps
-                "-f", "segment",
-                "-segment_time", "300",
-                "-reset_timestamps", "1",
+                "-preset", "fast",
+                "-crf", "23",
+                "-pix_fmt", "yuv420p",
                 video_file_path.to_str().unwrap(),
             ])
             .stdin(Stdio::piped())
+            .stdout(Stdio::null())
+            .stderr(Stdio::piped())
             .spawn()
-            .expect("Failed to start ffmpeg");
+        {
+            Ok(p) => p,
+            Err(err) => {
+                eprintln!("Failed to start ffmpeg: {}", err);
+                return;
+            }
+        };
 
         let mut stdin = ffmpeg.stdin.take().expect("Failed to open ffmpeg stdin");
-        let ticker = tick(Duration::from_millis(33));
+        let ticker = tick(Duration::from_millis(50)); // ~20 FPS
 
         // Timer for recording duration
         let start_time = Instant::now();
@@ -130,8 +116,18 @@ pub fn start_screen_recording() -> Result<(), String> {
         // Capture loop
         while RUNNING.load(Ordering::SeqCst) {
             ticker.recv().unwrap(); // Wait for next tick
-            let image = primary.capture().expect("Failed to capture screen");
-            stdin.write_all(image.as_bytes()).expect("Failed to write frame");
+            let image = match primary.capture() {
+                Ok(img) => img,
+                Err(err) => {
+                    eprintln!("Failed to capture screen: {}", err);
+                    break;
+                }
+            };
+
+            if let Err(err) = stdin.write_all(image.as_bytes()) {
+                eprintln!("Failed to write frame: {}", err);
+                break;
+            }
             if last_print.elapsed().as_secs() >= 1 {
                 let elapsed = start_time.elapsed().as_secs();
                 println!("Recording duration: {} seconds", elapsed);
@@ -140,8 +136,30 @@ pub fn start_screen_recording() -> Result<(), String> {
         }
 
         drop(stdin);
-        ffmpeg.wait().expect("FFmpeg process failed");
+        let _ = ffmpeg.wait();
+
+        // Store last recording info
+        let duration = start_time.elapsed().as_secs();
+        let info = RecordingInfo {
+            video_path: video_file_path.to_string_lossy().into_owned(),
+            keylog_path: log_file_path.to_string_lossy().into_owned(),
+            duration_seconds: duration,
+        };
+        if let Ok(mut lock) = LAST_RECORDING.lock() {
+            *lock = Some(info);
+        }
     });
 
     Ok(())
+}
+
+pub fn stop_screen_recording_signal() {
+    RUNNING.store(false, Ordering::SeqCst);
+}
+
+pub fn get_last_recording_info() -> Option<RecordingInfo> {
+    if let Ok(lock) = LAST_RECORDING.lock() {
+        return lock.clone();
+    }
+    None
 }

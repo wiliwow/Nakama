@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { invoke } from '@tauri-apps/api/core';
-import { tauri } from '@tauri-apps/api';
 
 interface Props {
   onSend: (text: string) => void;

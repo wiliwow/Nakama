@@ -1,59 +1,47 @@
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use std::sync::Arc;
-use tokio::sync::Mutex;
-
-#[derive(Serialize)]
-struct OllamaRequest {
-    model: String,
-    prompt: String,
-}
-
-#[derive(Deserialize)]
-struct OllamaResponse {
-    content: String,
-}
+use ollama_rs::{
+    generation::completion::{request::GenerationRequest, GenerationResponseStream},
+    Ollama,
+};
+use tokio_stream::StreamExt;
 
 pub struct AICompanion {
-    client: Client,
-    api_url: String,
+    client: Ollama,
+    model: String,
 }
 
 impl AICompanion {
-    pub fn new(api_url: String) -> Self {
+    /// Create a new AICompanion that will use the given Ollama model (for example "deepseek:latest").
+    pub fn new(model: String) -> Self {
         Self {
-            client: Client::new(),
-            api_url,
+            client: Ollama::default(),
+            model,
         }
     }
 
-    pub async fn process_request(&self, user_input: String) -> Result<String, String> {
-        let request_body = OllamaRequest {
-            model: "deepseek".to_string(), // Change to "qwen" if needed
-            prompt: user_input,
-        };
+    /// Clone the configured model name.
+    pub fn model_clone(&self) -> String {
+        self.model.clone()
+    }
 
-        let response = self
+    /// Process a single user input and return the generated text.
+    pub async fn process_request(&self, user_input: String) -> Result<String, String> {
+        let request = GenerationRequest::new(self.model.clone(), user_input);
+
+        let mut stream: GenerationResponseStream = self
             .client
-            .post(&self.api_url)
-            .json(&request_body)
-            .send()
+            .generate_stream(request)
             .await
             .map_err(|e| e.to_string())?;
 
-        if response.status().is_success() {
-            let ollama_response: OllamaResponse = response.json().await.map_err(|e| e.to_string())?;
-            Ok(ollama_response.content)
-        } else {
-            Err(format!("Error: {}", response.status()))
-        }
-    }
-}
+        let mut result = String::new();
 
-pub async fn handle_ai_request(
-    ai_companion: Arc<Mutex<AICompanion>>,
-    user_input: String,
-) -> Result<String, String> {
-    let ai = ai_companion.lock().await;
-    ai.process_request(user_input).await
+        while let Some(chunk_res) = stream.next().await {
+            let chunk = chunk_res.map_err(|e| e.to_string())?;
+            for piece in chunk {
+                result.push_str(&piece.response);
+            }
+        }
+
+        Ok(result)
+    }
 }

@@ -1,142 +1,31 @@
-Key Key KeyN pressed at KeyN pressed at 2022052-50-70-72-92 92 32:32:02:03:636..907520138907664281  ++0011::000
-0
-Key Key KeyMKeyM pressed at  pressed at 22002255--0077--2299 2 32:32:0:2306.:9422147633 6+0.1942214793:0 0+
-01:00
-Key Key KeyBKeyB pressed at  pressed at 22002255--0077--2299  2233::2200::3377..000011288341128824  ++0011::0000
+[package]
+name = "nakama"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
 
-Key Key KeyMKeyM pressed at  pressed at 22002255--0077--2299  2233::2200::3377..193886681193888445  ++0011::0000
+[lib]
+name = "nakama_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3377..203053942203053612  ++0011::0000
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
 
-Key Key KeyB pressed at KeyB pressed at 2022052-50-70-72-92 92 32:32:02:03:73.7331548324. 331532587+ 0+10:10:00
-0
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3377..465231553465231678  ++0011::0000
-
-Key Key KeyMKeyM pressed at  pressed at 22002255--0077--2299  2233::2200::3377..474336827474331314  ++0011::0000
-
-Key Key KeyBKeyB pressed at  pressed at 22002255--0077--2299  2233::2200::3377..567939894567927059  ++0011::0000
-
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3377..715576079715564572  ++0011::0000
-
-Key Key KeyMKeyM pressed at  pressed at 22002255--0077--2299  2233::2200::3377..733861049733942868  ++0011::0000
-
-Key Key KeyB pressed at 2KeyB0 pressed at 2250-2057--0279- 2293 :2230::2307:.38232615707 .823215243+ 0+10:10:00
-0
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3377..969105856969105897  ++0011::0000
-
-Key Key KeyM pressed at 2KeyM0 pressed at 2250-2057--0279- 2293 :2230::2307:.39873271907 .987264169+ 0+10:10:00
-0
-Key Key KeyB pressed at KeyB2 pressed at 022052-50-70-72-92 92 32:32:02:03:83.80.768302630 76745743+ 0+10:10:00
-0
-Key Key KeyMKeyM pressed at  pressed at 22002255--0077--2299  2233::2200::3388..205409359205315712  ++0011::0000
-
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3388..214477823214502670  ++0011::0000
-
-Key KeyBKey  pressed at KeyB2 pressed at 022052-50-70-72-92 92 32:32:02:03:83.8332938245. 333023828+ 0+10:10:00
-0
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3388..491116537491219279  ++0011::0000
-
-Key Key KeyMKeyM pressed at  pressed at 22002255--0077--2299  2233::2200::3388..503988355503988490  ++0011::0000
-
-Key Key KeyB pressed at KeyB pressed at 22002255--0077-2-92 92 32:32:02:03:83.8593674345. 593740583+ 0+10:10:000
-
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2200::3388..717599162717636097  ++0011::0000
-
-Key Key InsertInsert pressed at  pressed at 22002255--0077--2299  2233::2266::3322..003485394134854653  ++0011::0000
-
-Key Key PrintScreenPrintScreen pressed at  pressed at 22002255--0077--2299  2233::2266::3322..595313494595325411  ++0011::0000
-
-Key Key KeyCKeyC pressed at  pressed at 22002255--0077--2299  2233::2266::3333..328612460328653741  ++0011::0000
-
-Key KeyQ pressed at 2025-07-29 23:26Key :KeyQ3 pressed at 32.04302525982 5+-0017:-0209
- 23:26:33.430573765 +01:00
-Key KeyN pressed at Key 2KeyN0 pressed at 252-00275--2097 -2239: 2263::3236.:5288660253 3+.05289711681 :+0001
-:00
-Key Key SpaceSpace pressed at  pressed at 22002255--0077-2-92 92 32:32:62:63:33.3695842404. 695903029+ 0+10:10:00
-0
-Key Key KeyYKeyY pressed at  pressed at 22002255--0077--2299  2233::2266::3344..001968822119688652  ++0011::0000
-
-Key Key KeyOKeyO pressed at  pressed at 22002255--0077--2299  2233::2266::3344..122289805122290110  ++0011::0000
-
-Key Key KeyUKeyU pressed at  pressed at 22002255--0077--2299  2233::2266::3344..194469172194470094  ++0011::0000
-
-Key Key SpaceSpace pressed at  pressed at 22002255--0077--2299  2233::2266::3344..407732171407732186  ++0011::0000
-
-Key Key KeyIKeyI pressed at  pressed at 22002255--0077--2299  2233::2266::3355..558620414558620389  ++0011::0000
-
-Key SemiColon pressed at 2025-Key 0SemiColon7 pressed at -22092 52-30:72-62:93 52.3654947497: 2+60:13:50.0655146086
- +01:00
-Key Key KeyPKeyP pressed at  pressed at 22002255--0077--2299  2233::2266::3355..904012296904196186  ++0011::0000
-
-Key Key KeyOKeyO pressed at  pressed at 22002255--0077--2299  2233::2266::3366..002900228969625  ++0011::0000
-
-Key Backspace pressed at 2025-07-29 23:26:36.545977290 +01:00
-Key Backspace pressed at 2025-07-29 23:26:36.547426611 +01:00
-Key Key KeyR pressed at KeyR pressed at 22002255--0077--2299  2233::2266::4422..003865638138656361  ++0011::0000
-
-Key Key KeyO pressed at KeyO pressed at 202250-2075--290 723-:2296 :4223.:1995517312 6+:014:200.
-199564931 +01:00
-Key Key KeyV pressed at KeyV pressed at 202250-2057--209 72-3:2296: 422.3359503527: 2+60:1:4020
-.359510804 +01:00
-Key Key KeyEKeyE pressed at  pressed at 2202052-057--2097 2-3:2296: 422.3491327548: 2+601::4002
-.491327472 +01:00
-Key Key SpaceSpace pressed at  pressed at 22002255--0077--2299  2233::2266::4422..610956922610956957  ++0011::0000
-
-Key Key KeyTKeyT pressed at  pressed at 2202052-057--0297 -232:926 :2423.:9431379622 6+:014:200.
-943138628 +01:00
-Key Key KeyHKeyH pressed at  pressed at 22002255--0077-2-92 923 :2263::432.6729457611: 4+031.:07294391880 
-+01:00
-Key KeyE pressed at 2025-07-29 23:26:43.831180664 +01:00
-Key KeyE pressed at 2025-07-29 23:26:43.831701276 +01:00
-Key Key SpaceSpace pressed at  pressed at 22002255--0077--2299  2233::2266::4444..000019794991909537  ++0011::0000
-
-Key Key KeyBKeyB pressed at  pressed at 22002255--0077--2299  2233::2266::4444..319570966319646896  ++0011::0000
-
-Key Key KeyUKeyU pressed at  pressed at 22002255--0077--2299  2233::2266::4444..489738709489738683  ++0011::0000
-
-Key Key KeyTKeyT pressed at  pressed at 22002255--0077--2299  2233::2266::4444..625428370625428411  ++0011::0000
-
-Key Key KeyTKeyT pressed at  pressed at 22002255--0077--2299  2233::2266::4444..801604284801604073  ++0011::0000
-
-Key Key KeyOKeyO pressed at  pressed at 22002255--0077--2299  2233::2266::4444..936065613936065653  ++0011::0000
-
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2266::4455..003865691238656892  ++0011::0000
-
-Key Key SpaceSpace pressed at  pressed at 22002255--0077--2299  2233::2266::4455..217597318217597283  ++0011::0000
-
-Key KeyO pressed at 2025-07-29 23:26Key :4KeyO7 pressed at .200490084712 5-+0071-:2090 
-23:26:47.049268968 +01:00
-Key Key KeyNKeyN pressed at  pressed at 22002255--0077--2299  2233::2266::4477..106255586106250830  ++0011::000
-0
-Key Key SpaceSpace pressed at  pressed at 22002255--0077--2299  232:32:62:64:74.7331517472. 331517146+ 01+:0010:
-00
-Key Key KeyTKeyT pressed at  pressed at 22002255--0077--2299  2233::2266::4477..591070827591070912  ++0011::0000
-
-Key Key KeyHKeyH pressed at  pressed at 22002255--0077--2299  2233::2266::4477..751871769751871734  ++0011::0000
-
-Key KeyI pressed at Key 20KeyI2 pressed at 5-20072-52-90 72-32:92 62:34:72.6828455193: 4+70.1828548889: 00+
-01:00
-Key KeyS pressed at 2025-07-29 23:26:47.968682759 +01:00
-Key KeyS pressed at 2025-07-29 23:26:47.969627676 +01:00
-Key Key Space pressed at 2025-07-29 23:26:48.076727095 +01:00
-Space pressed at 2025-07-29 23:26:48.076706538 +01:00
-Key KeyC pressed at 2Key 02KeyC5 pressed at -0270-2259- 0273-:2296 :2438:.22408436896 :4+80.1240952916: 00+
-01:00
-Key Key KeyO pressed at KeyO2 pressed at 02250-2057--0279- 2293 :2236::2468:4.8402619552. 402619527+ 0+10:10:00
-0
-Key Key SemiColon pressed at SemiColon2 pressed at 022052-50-70-72-92 92 32:32:62:64:84.8500355232. 500315019+ 0+10:10:00
-0
-Key Key KeyP pressed at 2025-07-29 23:26:48.774702926 +01:00
-KeyP pressed at 2025-07-29 23:26:48.774702886 +01:00
-Key KeyOKey  pressed at KeyO pressed at 22002255--0077--2299  2233::2266::4488..866150030866257037  ++0011::0000
-
-Key Key KeyN pressed at KeyN2 pressed at 02250-2057--0279- 2293 :2236::2560:5.00.408307070 40793691+ 0+10:10:00
-0
-Key Key KeyE pressed at 2KeyE0 pressed at 252-00275--2097 -2239: 2263::5206.:1433847945 0+.01433286701 :+0001
-:00
-Key KeyN pressed at 2025-07-29 23:26:50.249046764 +01:00
-Key KeyN pressed at 2025-07-29 23:26:50.251585537 +01:00
-Key Key KeyTKeyT pressed at  pressed at 22002255--0077--2299  2233::2266::5500..373795370373795350  ++0011::0000
-
-Key Key ReturnReturn pressed at  pressed at 22002255--0077--2299  2233::2266::5511..858095097858094300  ++0011::0000
-
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+screenshots = "0.8.10"
+rdev = "0.5"
+nix = "0.26.2"
+crossbeam-channel = "0.5.6"
+chrono = "0.4.20"
+tauri-plugin-mic-recorder = "2.0.0"
+alsa = "0.9.1"
+bytemuck = "1.15.0"
+enigo = "0.5.0"
+candle-core = { git = "https://github.com/huggingface/candle", rev = "f9c6c51", default-features = false }
+candle-nn = { git = "https://github.com/huggingface/candle", rev = "f9c6c51", default-features = false }
+hf-hub = { version = "0.4.3", features = ["tokio"] }
