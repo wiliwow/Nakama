@@ -26,6 +26,7 @@ dist-ssr
 # Recording files and logs
 recordings/**/*.mp4
 recordings/**/*.txt
+recordings/**/*.raw
 src-tauri/key_log.txt
 
 # CUDA and system files
