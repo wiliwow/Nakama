@@ -1,5 +1,5 @@
-use std::sync::atomic::{AtomicBool, Ordering};
 use serde::Serialize;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use crate::recorder::{self, get_last_recording_info, stop_screen_recording_signal};
 

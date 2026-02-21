@@ -1,6 +1,6 @@
-use tauri::Emitter;
 use crate::ai_companion::AICompanion;
 use std::sync::Arc;
+use tauri::Emitter;
 use tauri::{State, Window};
 use tokio::sync::Mutex;
 use tokio_stream::StreamExt;
@@ -34,7 +34,8 @@ pub async fn ask_ai_stream(
     tokio::spawn(async move {
         // create a fresh Ollama client for this task
         let client = ollama_rs::Ollama::default();
-        let request = ollama_rs::generation::completion::request::GenerationRequest::new(model, prompt);
+        let request =
+            ollama_rs::generation::completion::request::GenerationRequest::new(model, prompt);
 
         match client.generate_stream(request).await {
             Ok(mut stream) => {

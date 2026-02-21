@@ -1,19 +1,22 @@
-mod commands;
+mod ai_companion;
 mod command;
+mod commands;
 mod input_controller;
 mod recorder;
-mod ai_companion;
 
 use tauri::Manager;
 
-use commands::mouse::{mouse_move, mouse_click, type_text, press_key};
-use commands::recording::{start_screen_recording, stop_screen_recording, get_screen_recording_status, start_voice_recording, stop_voice_recording, get_voice_recording_status};
-use commands::ai::{ask_ai, ask_ai_stream};
-use command::get_message;
-use input_controller::InputController;
 use ai_companion::AICompanion;
-use std::sync::Mutex;
+use command::get_message;
+use commands::ai::{ask_ai, ask_ai_stream};
+use commands::mouse::{mouse_click, mouse_move, press_key, type_text};
+use commands::recording::{
+    get_screen_recording_status, get_voice_recording_status, start_screen_recording,
+    start_voice_recording, stop_screen_recording, stop_voice_recording,
+};
+use input_controller::InputController;
 use std::sync::Arc;
+use std::sync::Mutex;
 use tokio::sync::Mutex as TokioMutex;
 
 struct AppState {
@@ -38,6 +41,7 @@ pub fn run() {
     )));
 
     let mut builder = tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             input: Mutex::new(InputController::new()),
         })

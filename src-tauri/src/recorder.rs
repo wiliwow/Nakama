@@ -1,3 +1,8 @@
+use chrono::Local;
+use crossbeam_channel::tick;
+use rdev::{listen, Event, EventType};
+use screenshots::{image::EncodableLayout, Screen};
+use serde::Serialize;
 use std::{
     fs::{self, OpenOptions},
     io::Write,
@@ -7,11 +12,6 @@ use std::{
     thread,
     time::{Duration, Instant},
 };
-use chrono::Local;
-use crossbeam_channel::tick;
-use rdev::{listen, Event, EventType};
-use screenshots::{image::EncodableLayout, Screen};
-use serde::Serialize;
 fn key_logger(event: Event, file_path: &Path) {
     if let EventType::KeyPress(key) = event.event_type {
         let timestamp = Local::now(); // Get the current date and time
@@ -22,8 +22,7 @@ fn key_logger(event: Event, file_path: &Path) {
             .open(&file_path)
             .expect("Failed to open file");
 
-        writeln!(file, "Key {:?} pressed at {}", key, timestamp)
-            .expect("Failed to write to file");
+        writeln!(file, "Key {:?} pressed at {}", key, timestamp).expect("Failed to write to file");
     }
 }
 
@@ -43,10 +42,19 @@ static LAST_RECORDING: Lazy<StdMutex<Option<RecordingInfo>>> = Lazy::new(|| StdM
 
 pub fn start_screen_recording() -> Result<(), String> {
     // Check that `ffmpeg` is available before spawning the recording thread.
-    match Command::new("ffmpeg").arg("-version").stdout(Stdio::null()).stderr(Stdio::null()).status() {
+    match Command::new("ffmpeg")
+        .arg("-version")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+    {
         Ok(status) if status.success() => {}
         Ok(_) => return Err("ffmpeg is present but returned non-zero when queried".into()),
-        Err(_) => return Err("ffmpeg not found in PATH. Install ffmpeg and ensure it's available in PATH".into()),
+        Err(_) => {
+            return Err(
+                "ffmpeg not found in PATH. Install ffmpeg and ensure it's available in PATH".into(),
+            )
+        }
     }
 
     // Set running flag
@@ -83,15 +91,24 @@ pub fn start_screen_recording() -> Result<(), String> {
         let mut ffmpeg = match Command::new("ffmpeg")
             .args(&[
                 "-y",
-                "-f", "rawvideo",
-                "-pix_fmt", "bgra",
-                "-s", &format!("{}x{}", width, height),
-                "-framerate", "20",
-                "-i", "-",
-                "-c:v", "libx264",
-                "-preset", "fast",
-                "-crf", "23",
-                "-pix_fmt", "yuv420p",
+                "-f",
+                "rawvideo",
+                "-pix_fmt",
+                "bgra",
+                "-s",
+                &format!("{}x{}", width, height),
+                "-framerate",
+                "20",
+                "-i",
+                "-",
+                "-c:v",
+                "libx264",
+                "-preset",
+                "fast",
+                "-crf",
+                "23",
+                "-pix_fmt",
+                "yuv420p",
                 video_file_path.to_str().unwrap(),
             ])
             .stdin(Stdio::piped())

@@ -33,3 +33,4 @@ reqwest = { version = "0.12", features = ["json"] }
 once_cell = "1.20"
 ollama-rs = { version = "0.3.3", features = ["stream"] }
 tokio-stream = "0.1"
+tauri-plugin-dialog = "2"

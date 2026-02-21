@@ -4,16 +4,28 @@ import { listen } from "@tauri-apps/api/event";
 import MessageList, { Message } from "./MessageList";
 import MessageInput from "./MessageInput";
 import RecordingControls from "./RecordingControls";
+import FileLister from "./FileLister";
+
+
 
 const ChatContainer: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     { sender: "ai", text: "Hi! I'm Nakama, your night-sky companion. How can I help you today?" },
   ]);
   const [loading, setLoading] = useState(false);
+  const [files, setFiles] = useState<string[]>([]);
+
+  const handleFilesSelected = (selectedFiles: string[] | string | null) => {
+    if (!selectedFiles) return;
+    const incoming = Array.isArray(selectedFiles) ? selectedFiles : [selectedFiles];
+    setFiles(prev => [...prev, ...incoming]);
+  };
 
   const handleSend = async (text: string) => {
     console.log("[AI] User sent message:", text);
     setMessages(msgs => [...msgs, { sender: "user", text }]);
+    // clear staged files when user sends a message
+    setFiles([]);
     setLoading(true);
     // Insert a placeholder AI message that we'll update as chunks arrive
     setMessages(msgs => [...msgs, { sender: "ai", text: "" }]);
@@ -52,20 +64,9 @@ const ChatContainer: React.FC = () => {
         await unlistenError();
         await unlistenDone();
       });
-
-      // Trigger streaming; the command returns immediately after spawning
-      console.log("[AI] Invoking ask_ai_stream with prompt:", text);
-      await invoke("ask_ai_stream", { prompt: text });
-      console.log("[AI] ask_ai_stream invoked successfully");
+      await invoke("start_ai_stream", { message: text });
     } catch (err) {
-      console.error("[AI] Exception caught in handleSend:", err);
-      console.error("[AI] Error type:", typeof err);
-      console.error("[AI] Error details:", JSON.stringify(err, null, 2));
-      console.error("[AI] Error toString():", String(err));
-      if (err instanceof Error) {
-        console.error("[AI] Error message:", err.message);
-        console.error("[AI] Error stack:", err.stack);
-      }
+      console.error("[AI] Error:", err);
       setMessages(msgs => [
         ...msgs,
         { sender: "ai", text: `Sorry, I encountered an error: ${String(err)}. Make sure Ollama is running locally (ollama run deepseek).` },
@@ -79,10 +80,17 @@ const ChatContainer: React.FC = () => {
       <RecordingControls />
       <div className="flex flex-col flex-1 overflow-hidden">
         <MessageList messages={messages} />
-        <MessageInput onSend={handleSend} disabled={loading} />
+        {files && files.length > 0 && (
+          <div className="px-4 pb-2">
+            <div className="text-xs text-blue-300 mb-2">Linked Files:</div>
+            <FileLister files={files} />
+          </div>
+        )}
+        <MessageInput onSend={handleSend} disabled={loading} onFilesSelected={handleFilesSelected} />
       </div>
     </div>
   );
 };
 
 export default ChatContainer;
+

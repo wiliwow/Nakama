@@ -1,6 +1,6 @@
+use crate::input_controller::InputController;
 use enigo::{Button, Key};
 use std::sync::Mutex;
-use crate::input_controller::InputController;
 
 pub struct AppState {
     pub input: Mutex<InputController>,

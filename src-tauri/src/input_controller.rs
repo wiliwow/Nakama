@@ -1,4 +1,4 @@
-use enigo::{Enigo, Key, Button, Coordinate, Direction, Settings, Mouse, Keyboard};
+use enigo::{Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
 
 pub struct InputController {
     enigo: Enigo,
