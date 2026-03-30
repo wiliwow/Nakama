@@ -1,1 +1,24 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+/* Custom KaTeX styling for dark theme */
+.katex {
+  color: #e5e7eb;
+}
+
+.katex .base {
+  color: #e5e7eb;
+}
+
+/* Improve code block styling */
+.prose pre {
+  background-color: #374151 !important;
+  border: 1px solid #4b5563 !important;
+}
+
+.prose code:not(pre code) {
+  background-color: #374151 !important;
+  color: #fbbf24 !important;
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.25rem !important;
+}

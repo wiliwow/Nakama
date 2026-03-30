@@ -20,6 +20,6 @@ pub fn get_message(message: &str) -> Message {
         message: message.to_string(),
         sender: Sender::User,
     };
-    println!("Received message from frontend: {:#?}", message);
+    // println!("Received message from frontend: {:#?}", message);
     return message;
 }

@@ -1,4 +1,4 @@
-use enigo::{Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
+use enigo::{Axis, Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
 
 pub struct InputController {
     enigo: Enigo,
@@ -18,6 +18,18 @@ impl InputController {
 
     pub fn mouse_click(&mut self, button: Button) {
         self.enigo.button(button, Direction::Click).unwrap();
+    }
+
+    pub fn mouse_down(&mut self, button: Button) {
+        self.enigo.button(button, Direction::Press).unwrap();
+    }
+
+    pub fn mouse_up(&mut self, button: Button) {
+        self.enigo.button(button, Direction::Release).unwrap();
+    }
+
+    pub fn mouse_scroll(&mut self, amount: i32) {
+        self.enigo.scroll(amount, Axis::Vertical).unwrap();
     }
 
     // Keyboard controls

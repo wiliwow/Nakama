@@ -8,6 +8,15 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "dialog:default"
+    "dialog:default",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        {
+          "path": "$HOME/Nakama/src-tauri/*"
+        }
+      ]
+    },
+    "fs:allow-read-text-file"
   ]
 }
