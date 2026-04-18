@@ -94,7 +94,7 @@ const AutomationControlPanel: React.FC = () => {
           </div>
           <button
             type="button"
-            onClick={() => runCommand("mouse_drag", { start_x: drag.startX, start_y: drag.startY, end_x: drag.endX, end_y: drag.endY })}
+            onClick={() => runCommand("mouse_drag", { startX: drag.startX, startY: drag.startY, endX: drag.endX, endY: drag.endY })}
             className="px-3 py-2 rounded bg-emerald-700 hover:bg-emerald-600 text-white text-xs"
           >
             Drag

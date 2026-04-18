@@ -30,7 +30,7 @@ impl AICompanion {
             return user_input;
         }
 
-        let mut prompt = String::from("You are a helpful AI assistant. Here is the conversation history:\n\n");
+        let mut prompt = String::from("You are a helpful AI assistant. Answer user questions clearly and directly.\nDo not assume the user is asking about Rust or Rust packages unless the user explicitly mentions them.\nUse any retrieved context only when it is clearly relevant to the current user question.\n\nHere is the conversation history:\n\n");
 
         for message in conversation_history {
             let role = match message.role.as_str() {

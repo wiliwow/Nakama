@@ -30,7 +30,7 @@ use rag_indexer::IndexMetadataStore;
 use config::ConfigManager;
 use conversation::ConversationStore;
 
-struct AppState {
+pub struct AppState {
     #[allow(dead_code)]
     input: Mutex<InputController>,
     #[cfg(feature = "swiftide_integration")]

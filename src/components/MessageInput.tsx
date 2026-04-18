@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { invoke } from '@tauri-apps/api/core';
 import FileLinker from "./FileLinker";
 
 interface Props {
@@ -13,13 +12,9 @@ const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected }) =>
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (value.trim()) {
-      onSend(value);
-      // invoke command from src-tauri/src/command.rs
-      invoke("get_message", { message: value.trim() });
-
-      setValue("");
-    }
+    if (!value.trim()) return;
+    onSend(value.trim());
+    setValue("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

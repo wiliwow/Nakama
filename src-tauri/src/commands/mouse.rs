@@ -1,10 +1,6 @@
-use crate::input_controller::InputController;
+use crate::AppState;
 use enigo::{Button, Key};
-use std::{sync::Mutex, thread, time::Duration};
-
-pub struct AppState {
-    pub input: Mutex<InputController>,
-}
+use std::{thread, time::Duration};
 
 fn parse_button(button: &str) -> Button {
     match button {
