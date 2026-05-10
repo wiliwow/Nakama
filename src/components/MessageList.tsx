@@ -17,15 +17,20 @@ const shouldRenderMarkdown = (text: string) => {
 };
 
 const MessageList: React.FC<{ messages: Message[] }> = ({ messages }) => (
-  <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 space-y-4">
+  <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth">
     {messages.map((msg, idx) => (
       <div
         key={idx}
-        className={`max-w-4xl mx-auto flex flex-col gap-3 rounded-3xl border border-slate-800 bg-slate-950/90 p-4 shadow-lg text-sm sm:text-base ${
+        className={`max-w-4xl mx-auto flex flex-col gap-3 rounded-3xl border p-4 shadow-lg text-sm sm:text-base animate-fade-in ${
           msg.sender === "user"
-            ? "items-end bg-blue-950 text-blue-100"
-            : "items-start bg-slate-900 text-slate-100 border-l-4 border-amber-400"
+            ? "bg-blue-950/80 text-blue-100 border-slate-800/50 items-end"
+            : "bg-slate-900/80 text-slate-100 border-l-4 border-amber-500/60 items-start"
         }`}
+        style={{
+          animationDuration: '0.2s',
+          animationFillMode: 'both',
+          animationTimingFunction: 'ease-out'
+        }}
       >
         {msg.files && msg.files.length > 0 && (
           <div className="space-y-1 text-xs text-slate-300">

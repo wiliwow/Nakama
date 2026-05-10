@@ -30,7 +30,7 @@ impl AICompanion {
             return user_input;
         }
 
-        let mut prompt = String::from("You are a helpful AI assistant. Answer user questions clearly and directly.\nDo not assume the user is asking about Rust or Rust packages unless the user explicitly mentions them.\nUse any retrieved context only when it is clearly relevant to the current user question.\n\nHere is the conversation history:\n\n");
+        let mut prompt = String::from("You are a helpful AI assistant that can control the user's computer through mouse and keyboard actions.\n\nYou can execute computer control actions by including specific commands in your response:\n- Mouse movement: \"move to 100,200\" or \"go to coordinates (100,200)\"\n- Clicking: \"click at 100,200\" or \"right click\" or \"double click\"\n- Dragging: \"drag from 100,100 to 200,200\"\n- Scrolling: \"scroll up 50\" or \"scroll down 100\"\n- Typing: \"type hello world\"\n- Key presses: \"press enter\" or \"hit escape\" or \"press ctrl+c\"\n\nWhen the user asks you to perform an action, describe what you're doing AND include the command.\nAnswer user questions clearly and directly.\n\nHere is the conversation history:\n\n");
 
         for message in conversation_history {
             let role = match message.role.as_str() {

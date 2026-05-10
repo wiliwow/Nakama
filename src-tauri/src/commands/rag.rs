@@ -183,6 +183,18 @@ pub async fn rag_add_file(
 
     #[cfg(feature = "swiftide_integration")]
     {
+        // Input validation
+        if filename.is_empty() {
+            return Err("Filename cannot be empty".into());
+        }
+        if filename.contains('/') || filename.contains('\\') || filename.contains("..") {
+            return Err("Invalid filename: must not contain path separators or '..'".into());
+        }
+        const MAX_FILE_SIZE: usize = 10 * 1024 * 1024; // 10MB
+        if content.len() > MAX_FILE_SIZE {
+            return Err(format!("File too large: maximum allowed is {} bytes", MAX_FILE_SIZE));
+        }
+
         use swiftide::{indexing, integrations};
         use swiftide::indexing::EmbeddedField;
         use crate::rag_indexer::compute_hash;
@@ -345,6 +357,8 @@ pub struct HealthCheckResult {
 #[tauri::command]
 pub async fn rag_clear_index(
     #[cfg(feature = "swiftide_integration")]
+    config_manager: tauri::State<'_, std::sync::Arc<std::sync::Mutex<crate::config::ConfigManager>>>,
+    #[cfg(feature = "swiftide_integration")]
     metadata_store: tauri::State<'_, std::sync::Arc<tokio::sync::Mutex<crate::rag_indexer::IndexMetadataStore>>>,
 ) -> Result<u32, String> {
     #[cfg(not(feature = "swiftide_integration"))]
@@ -357,8 +371,14 @@ pub async fn rag_clear_index(
         use std::fs;
         use crate::rag_indexer::compute_stats;
 
-        // Get the LanceDB directory path
-        let lancedb_path = std::path::PathBuf::from("/home/wiliwow/.lancedb");
+        // Load configuration
+        let config = {
+            let mgr = config_manager.lock().unwrap();
+            mgr.load().map_err(|e| format!("failed to load config: {}", e))?
+        };
+
+        // Get the LanceDB directory path from config
+        let lancedb_path = config.lancedb_path;
 
         // Count documents before clearing (for return value)
         let document_count = {
@@ -372,7 +392,7 @@ pub async fn rag_clear_index(
         // For LanceDB, we need to drop the table and clear metadata
         // Since LanceDB doesn't expose a direct drop_table API in swiftide wrapper,
         // we'll delete the table directory and metadata
-        let table_path = lancedb_path.join("nakama_documents.lance");
+        let table_path = lancedb_path.join(format!("{}.lance", config.table_name));
 
         if table_path.exists() {
             if let Err(e) = fs::remove_dir_all(&table_path) {

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import MessageList, { Message } from "./MessageList";
 import MessageInput from "./MessageInput";
-import AutomationControlPanel from "./AutomationControlPanel";
-import ScreenVisionPanel, { ScreenCapture } from "./ScreenVisionPanel";
+import ChatHeader from "./ChatHeader";
+import FileStager from "./FileStager";
+import SidePanel from "./SidePanel";
+import ConversationList from "./ConversationList";
 
 interface RetrievedPassage {
   id: string;
@@ -30,56 +32,81 @@ interface Conversation {
 }
 
 const ChatContainer: React.FC = () => {
+  // Core state
   const [messages, setMessages] = useState<Message[]>([
     { sender: "ai", text: "Hi! I'm Nakama, your night-sky companion. How can I help you today?" },
   ]);
   const [loading, setLoading] = useState(false);
+
+  // Files & indexing
   const [files, setFiles] = useState<{ name: string; content: string }[]>([]);
   const [indexingFiles, setIndexingFiles] = useState(false);
   const [indexedFilesCount, setIndexedFilesCount] = useState(0);
-  const [screenVisionEnabled, setScreenVisionEnabled] = useState(false);
-  const [screenCaptures, setScreenCaptures] = useState<ScreenCapture[]>([]);
-  const [screenCaptureStatus, setScreenCaptureStatus] = useState<string | null>(null);
 
+  // Screen vision
+  const [screenVisionEnabled, setScreenVisionEnabled] = useState(false);
+  const [screenCaptures, setScreenCaptures] = useState<any[]>([]);
+  const [screenCaptureLoading, setScreenCaptureLoading] = useState<"primary" | "all" | null>(null);
+
+  // Conversations
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [showConversationList, setShowConversationList] = useState(false);
 
+  // Voice state
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceConversationEnabled, setVoiceConversationEnabled] = useState(false);
+
+  // Event listener cleanup
+  const unsubscribesRef = useRef<{ chunk?: () => void; error?: () => void; done?: () => void }>({});
+
+  // File handling
   const handleFilesSelected = (selectedFiles: { name: string; content: string }[] | null) => {
     if (!selectedFiles) return;
     setFiles(prev => [...prev, ...selectedFiles]);
   };
 
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Screen capture
   const capturePrimaryScreen = async () => {
     try {
-      const capture = await invoke<ScreenCapture>("capture_primary_screen");
+      setScreenCaptureLoading("primary");
+      const capture = await invoke<any>("capture_primary_screen");
       setScreenCaptures([capture]);
-      setScreenCaptureStatus("Primary screen captured.");
       setMessages(msgs => [
         ...msgs,
         { sender: "ai", text: "I can now see your primary screen.", screenshots: [capture] },
       ]);
     } catch (err) {
       console.error("Failed to capture primary screen:", err);
-      setScreenCaptureStatus(`Capture failed: ${String(err)}`);
+      setMessages(msgs => [...msgs, { sender: "ai", text: `Capture failed: ${String(err)}` }]);
+    } finally {
+      setScreenCaptureLoading(null);
     }
   };
 
   const captureAllScreens = async () => {
     try {
-      const captures = await invoke<ScreenCapture[]>("capture_all_screens");
+      setScreenCaptureLoading("all");
+      const captures = await invoke<any[]>("capture_all_screens");
       setScreenCaptures(captures);
-      setScreenCaptureStatus("All screens captured.");
       setMessages(msgs => [
         ...msgs,
         { sender: "ai", text: "I can now see all your screens.", screenshots: captures },
       ]);
     } catch (err) {
       console.error("Failed to capture all screens:", err);
-      setScreenCaptureStatus(`Capture failed: ${String(err)}`);
+      setMessages(msgs => [...msgs, { sender: "ai", text: `Capture failed: ${String(err)}` }]);
+    } finally {
+      setScreenCaptureLoading(null);
     }
   };
 
+  // Conversation management
   const loadConversations = async () => {
     try {
       const convs = await invoke<Conversation[]>("conversation_list");
@@ -140,10 +167,7 @@ const ChatContainer: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    loadConversations();
-  }, []);
-
+  // File indexing
   const indexStagedFiles = async () => {
     if (files.length === 0) return;
     try {
@@ -175,6 +199,7 @@ const ChatContainer: React.FC = () => {
     }
   };
 
+  // Send message
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
     setMessages(msgs => [...msgs, { sender: "user", text, files: files.length ? files : undefined }]);
@@ -228,6 +253,7 @@ const ChatContainer: React.FC = () => {
           return copy;
         });
       });
+      unsubscribesRef.current.chunk = unlistenChunk;
 
       const unlistenError = await listen<string>("ai-stream-error", (event) => {
         setMessages(msgs => {
@@ -239,16 +265,19 @@ const ChatContainer: React.FC = () => {
           return copy;
         });
       });
+      unsubscribesRef.current.error = unlistenError;
 
       const unlistenDone = await listen<void>("ai-stream-done", async () => {
         setLoading(false);
         await saveCurrentConversation();
-        await unlistenChunk();
-        await unlistenError();
-        await unlistenDone();
+        unlistenChunk();
+        unlistenError();
+        unlistenDone();
+        unsubscribesRef.current = {};
       });
+      unsubscribesRef.current.done = unlistenDone;
 
-      await invoke("ask_ai_stream_with_conversation", { prompt: text, conversationHistory: history });
+      await invoke("execute_ai_with_actions", { prompt: text, conversationHistory: history });
     } catch (err) {
       console.error("[AI] Exception caught in handleSend:", err);
       setMessages(msgs => [
@@ -259,104 +288,91 @@ const ChatContainer: React.FC = () => {
     }
   };
 
+  // Initial load
+  useEffect(() => {
+    loadConversations();
+  }, []);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      unsubscribesRef.current.chunk?.();
+      unsubscribesRef.current.error?.();
+      unsubscribesRef.current.done?.();
+    };
+  }, []);
+
   return (
-    <div className="h-full min-h-0 flex flex-col px-4 py-4">
-      <div className="mx-auto flex h-full w-full max-w-[1500px] flex-col min-h-0 overflow-hidden rounded-[32px] border border-slate-800 bg-slate-950/95 shadow-2xl">
-        <div className="flex flex-col gap-3 border-b border-slate-800 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={createNewConversation}
-              className="rounded-2xl bg-blue-700 px-4 py-2 text-xs font-semibold text-white transition hover:bg-blue-600"
-            >
-              ➕ New
-            </button>
-            <button
-              onClick={() => setShowConversationList(prev => !prev)}
-              className="rounded-2xl bg-violet-700 px-4 py-2 text-xs font-semibold text-white transition hover:bg-violet-600"
-            >
-              📂 Load
-            </button>
-            <span className="text-xs text-slate-400">{indexedFilesCount > 0 ? `${indexedFilesCount} indexed file(s)` : ""}</span>
-          </div>
-          {currentConversation && (
-            <div className="text-xs text-slate-300 truncate max-w-xs">{currentConversation.title}</div>
-          )}
-        </div>
+    <div className="relative h-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden">
+      {/* Main container with rounded corners */}
+      <div className="flex-1 mx-auto w-full max-w-[1500px] p-4 min-h-0 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0 rounded-[32px] border border-slate-800/60 bg-slate-950/95 shadow-2xl overflow-hidden">
+          {/* Header */}
+          <ChatHeader
+            indexedFilesCount={indexedFilesCount}
+            voiceConversationEnabled={voiceConversationEnabled}
+            onNewConversation={createNewConversation}
+            onToggleConversationList={() => setShowConversationList(prev => !prev)}
+            onToggleVoiceChat={setVoiceConversationEnabled}
+            currentConversationTitle={currentConversation?.title}
+          />
 
-        <div className="flex-1 min-h-0 overflow-hidden md:flex md:flex-row">
-          <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-              <MessageList messages={messages} />
-            </div>
-
-            {files.length > 0 && (
-              <div className="border-t border-slate-800 bg-slate-950/90 px-4 py-3">
-                <div className="text-xs text-slate-300 mb-2">Staged Files ({files.length}):</div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {files.map((file, index) => (
-                    <span key={index} className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-200">
-                      📄 {file.name}
-                    </span>
-                  ))}
-                </div>
-                <button
-                  onClick={indexStagedFiles}
-                  disabled={indexingFiles || loading}
-                  className="rounded-2xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {indexingFiles ? "Indexing..." : "Index Files"}
-                </button>
+          {/* Main content area */}
+          <div className="flex-1 flex flex-col md:flex-row min-h-0">
+            {/* Chat area */}
+            <div className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto px-4 py-4">
+                <MessageList messages={messages} />
               </div>
-            )}
 
-            <div className="border-t border-slate-800 bg-slate-950/90 px-4 py-4">
-              <MessageInput onSend={handleSend} disabled={loading || indexingFiles} onFilesSelected={handleFilesSelected} />
-            </div>
-          </div>
-
-          <aside className="hidden min-h-0 w-full flex-col border-l border-slate-800 bg-slate-900/90 p-4 md:flex md:w-[360px]">
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              <ScreenVisionPanel
-                enabled={screenVisionEnabled}
-                captures={screenCaptures}
-                onToggleEnabled={() => setScreenVisionEnabled(prev => !prev)}
-                onCapturePrimary={capturePrimaryScreen}
-                onCaptureAll={captureAllScreens}
+              {/* File stager */}
+              <FileStager
+                files={files}
+                indexingFiles={indexingFiles}
+                onIndexFiles={indexStagedFiles}
+                onRemoveFile={removeFile}
               />
+
+              {/* Message input */}
+              <div className="border-t border-slate-800/50">
+                <MessageInput
+                  onSend={handleSend}
+                  disabled={loading || indexingFiles}
+                  onFilesSelected={handleFilesSelected}
+                  isListening={isListening}
+                  isSpeaking={isSpeaking}
+                  onVoiceInput={async (text: string) => {
+                    setIsListening(false);
+                    await handleSend(text);
+                  }}
+                  onVoiceOutput={async (_text: string) => {
+                    setIsSpeaking(true);
+                  }}
+                />
+              </div>
             </div>
-            {screenCaptureStatus && <div className="pt-3 text-xs text-slate-400">{screenCaptureStatus}</div>}
-            <div className="min-h-0 flex-1 overflow-y-auto pt-4">
-              <AutomationControlPanel />
-            </div>
-          </aside>
+
+            {/* Side panel */}
+            <SidePanel
+              screenVisionEnabled={screenVisionEnabled}
+              screenCaptures={screenCaptures}
+              screenCaptureLoading={screenCaptureLoading}
+              onScreenVisionToggle={() => setScreenVisionEnabled(prev => !prev)}
+              onCapturePrimary={capturePrimaryScreen}
+              onCaptureAll={captureAllScreens}
+            />
+          </div>
         </div>
       </div>
 
+      {/* Conversation list modal */}
       {showConversationList && (
-        <div className="absolute inset-x-0 top-[5.5rem] mx-auto w-full max-w-[1500px] px-4">
-          <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 shadow-2xl">
-            <div className="border-b border-slate-800 px-4 py-3 text-sm font-semibold text-slate-200">Recent Conversations</div>
-            <div className="max-h-64 overflow-y-auto px-4 py-3">
-              {conversations.length === 0 ? (
-                <div className="text-xs italic text-slate-500">No conversations yet</div>
-              ) : (
-                conversations.map(conv => (
-                  <button
-                    key={conv.id}
-                    onClick={() => loadConversation(conv.id!)}
-                    className="mb-2 w-full rounded-2xl border border-slate-800 bg-slate-900/90 px-4 py-3 text-left transition hover:border-blue-500"
-                  >
-                    <div className="text-sm text-slate-100 truncate">{conv.title}</div>
-                    <div className="text-xs text-slate-500">{new Date(conv.updated_at).toLocaleDateString()}</div>
-                  </button>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
+        <ConversationList
+          conversations={conversations}
+          onSelect={loadConversation}
+          onClose={() => setShowConversationList(false)}
+        />
       )}
-
-      {showConversationList && <div className="fixed inset-0 z-10" onClick={() => setShowConversationList(false)} />}
     </div>
   );
 };

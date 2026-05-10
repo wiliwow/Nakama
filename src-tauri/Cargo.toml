@@ -38,10 +38,13 @@ tokio-stream = "0.1"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 rusqlite = { version = "0.32", features = ["bundled"] }
+rand = "0.8"
+regex = "1.10"
 
 # Swiftide RAG integration (local path to workspace swiftide crate)
 swiftide = { path = "../../swiftide/swiftide", features = ["fastembed", "lancedb" ] }
 swiftide-core = { path = "../../swiftide/swiftide-core" }
+anthropic = "0.0.8"
 
 [features]
 # Enable RAG integration with Swiftide

@@ -5,3 +5,5 @@ pub mod recording;
 pub mod fetch_files;
 pub mod rag;
 pub mod conversation;
+pub mod execute_ai_with_actions;
+pub mod computer_use;

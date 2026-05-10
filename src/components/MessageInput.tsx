@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import FileLinker from "./FileLinker";
+import VoiceControls from "./VoiceControls";
 
 interface Props {
   onSend: (text: string) => void;
   disabled?: boolean;
   onFilesSelected?: (files: { name: string; content: string }[] | null) => void;
+  isListening?: boolean;
+  isSpeaking?: boolean;
+  onVoiceInput?: (text: string) => void;
+  onVoiceOutput?: (text: string) => void;
 }
 
-const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected }) => {
+const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected, isListening = false, isSpeaking = false, onVoiceInput, onVoiceOutput }) => {
   const [value, setValue] = useState("");
 
   const handleSend = (e: React.FormEvent) => {
@@ -15,6 +20,12 @@ const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected }) =>
     if (!value.trim()) return;
     onSend(value.trim());
     setValue("");
+  };
+
+  const handleVoiceInput = (text: string) => {
+    if (text.trim()) {
+      onSend(text.trim());
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -59,18 +70,21 @@ const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected }) =>
   ];
 
   return (
-    <div className="w-full">
-      {/* Markdown Toolbar */}
-      <div className="px-4 py-1 bg-[#232a4a] border-b border-gray-600 text-xs text-gray-400 text-center">
-        Supports plain text, Markdown, LaTeX ($...$ or $$...$$), and code blocks.
+    <div className="w-full bg-slate-900/40">
+      {/* Markdown Toolbar Hint */}
+      <div className="px-4 py-1.5 bg-slate-800/30 text-[10px] text-slate-500 border-b border-slate-800/30 flex items-center justify-between">
+        <span>Supports Markdown, LaTeX ($...$), and code blocks</span>
+        <span className="opacity-60">Enter to send, Shift+Enter for newline</span>
       </div>
-      <div className="flex flex-wrap gap-1 px-4 py-2 bg-[#232a4a] rounded-t-2xl border-b border-gray-600">
+
+      {/* Formatting toolbar */}
+      <div className="flex flex-wrap gap-1 px-4 py-2 bg-[#232a4a] border-b border-slate-800/30">
         {toolbarButtons.map((btn, idx) => (
           <button
             key={idx}
             type="button"
             onClick={btn.action}
-            className="px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-200 rounded transition-colors font-medium"
+            className="px-2 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 rounded transition-colors font-medium active:scale-95"
             title={btn.title}
           >
             {btn.label}
@@ -78,15 +92,25 @@ const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected }) =>
         ))}
       </div>
 
+      {/* Main input area */}
       <form
         onSubmit={handleSend}
-        className="w-full flex items-end gap-2 px-4 py-3 bg-[#181e36] rounded-b-2xl shadow-inner relative"
+        className="w-full flex items-end gap-3 px-4 py-3 bg-slate-800/20 relative"
       >
-        <div className="mr-2 flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <FileLinker onFilesSelected={onFilesSelected} />
+          {onVoiceInput && (
+            <VoiceControls
+              onVoiceInput={handleVoiceInput}
+              onVoiceOutput={onVoiceOutput}
+              isListening={isListening}
+              isSpeaking={isSpeaking}
+            />
+          )}
         </div>
+
         <textarea
-          className="flex-1 bg-[#232a4a] text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none font-mono"
+          className="flex-1 bg-[#232a4a] text-white px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none font-mono text-sm leading-relaxed placeholder:text-slate-500 transition-all shadow-inner"
           placeholder="Type your message... markdown, LaTeX, or plain text all supported"
           value={value}
           onChange={e => setValue(e.target.value)}
@@ -96,12 +120,24 @@ const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected }) =>
           rows={3}
           style={{ minHeight: '80px' }}
         />
+
         <button
           type="submit"
-          className="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50"
+          className="shrink-0 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-lg hover:shadow-blue-500/25"
           disabled={disabled || !value.trim()}
         >
-          Send
+          {disabled ? (
+            <>
+              <span className="animate-pulse">●</span> Sending...
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              Send
+            </>
+          )}
         </button>
       </form>
     </div>

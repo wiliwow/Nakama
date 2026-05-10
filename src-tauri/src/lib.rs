@@ -13,7 +13,7 @@ use ai_companion::AICompanion;
 use command::get_message;
 use commands::ai::{ask_ai, ask_ai_stream, ask_ai_with_conversation, ask_ai_stream_with_conversation};
 use commands::mouse::{mouse_click, mouse_drag, mouse_move, mouse_down, mouse_up, mouse_scroll, press_key, type_text};
-use commands::screen::{capture_all_screens, capture_primary_screen};
+use commands::screen::{capture_all_screens, capture_primary_screen, get_display_info};
 use commands::recording::{
     get_screen_recording_status, get_voice_recording_status, start_screen_recording,
     start_voice_recording, stop_screen_recording, stop_voice_recording,
@@ -21,6 +21,8 @@ use commands::recording::{
 #[cfg(feature = "swiftide_integration")]
 use commands::rag::{rag_index, rag_retrieve, rag_add_file, rag_health_check, rag_clear_index, rag_index_stats};
 use commands::conversation::{conversation_create, conversation_load, conversation_save, conversation_list, conversation_delete, conversation_add_message};
+use commands::execute_ai_with_actions::execute_ai_with_actions;
+use commands::computer_use::{execute_computer_tool, execute_text_editor_tool, execute_bash_tool};
 use input_controller::InputController;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -117,8 +119,12 @@ pub fn run() {
     builder = builder.invoke_handler(tauri::generate_handler![
             mouse_move,
             mouse_click,
-            type_text,
+            mouse_drag,
+            mouse_down,
+            mouse_up,
+            mouse_scroll,
             press_key,
+            type_text,
             get_message,
             start_screen_recording,
             stop_screen_recording,
@@ -132,14 +138,7 @@ pub fn run() {
             ask_ai_stream_with_conversation,
             capture_primary_screen,
             capture_all_screens,
-            mouse_move,
-            mouse_click,
-            mouse_drag,
-            mouse_down,
-            mouse_up,
-            mouse_scroll,
-            press_key,
-            type_text,
+            get_display_info,
             fetch_files,
             conversation_create,
             conversation_load,
@@ -159,6 +158,10 @@ pub fn run() {
             rag_clear_index,
             #[cfg(feature = "swiftide_integration")]
             rag_index_stats,
+            execute_ai_with_actions,
+            execute_computer_tool,
+            execute_text_editor_tool,
+            execute_bash_tool,
         ]);
 
     // In development builds, open the webview devtools automatically to inspect UI errors.

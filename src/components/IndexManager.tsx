@@ -20,7 +20,7 @@ interface HealthStatus {
 
 const IndexManager: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [indexStatus] = useState<IndexStatus | null>(null);
+  const [indexStatus, setIndexStatus] = useState<IndexStatus | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -34,10 +34,11 @@ const IndexManager: React.FC = () => {
 
   const refreshStatus = async () => {
     try {
-      // In a full implementation, you'd have backend commands to fetch these stats
-      // For now, we'll show placeholder data with health check
       const health = await invoke<HealthStatus>("rag_health_check");
       setHealthStatus(health);
+      // Also fetch index statistics
+      const stats = await invoke<IndexStatus>("rag_index_stats");
+      setIndexStatus(stats);
     } catch (err) {
       console.error("Failed to fetch status:", err);
       setMessage({ type: "error", text: `Error: ${String(err)}` });
@@ -99,9 +100,9 @@ const IndexManager: React.FC = () => {
 
     try {
       setLoading(true);
-      // Backend command to clear index (to be implemented in rag_indexer)
-      // For now, we'll just show the intent
-      setMessage({ type: "error", text: "Clear feature coming soon" });
+      const result = await invoke<number>("rag_clear_index");
+      setMessage({ type: "success", text: `✓ Cleared ${result} document(s) from index` });
+      setTimeout(refreshStatus, 500);
     } catch (err) {
       console.error("Clear index error:", err);
       setMessage({ type: "error", text: `Error: ${String(err)}` });
@@ -223,7 +224,7 @@ const IndexManager: React.FC = () => {
               <button
                 onClick={handleFileUpload}
                 disabled={loading}
-                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold text-sm disabled:opacity-50 transition-all"
+                className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {loading ? "Indexing..." : "📤 Upload & Index Files"}
               </button>
@@ -231,7 +232,7 @@ const IndexManager: React.FC = () => {
               <button
                 onClick={handleClearIndex}
                 disabled={loading}
-                className="w-full py-2 px-3 rounded-lg bg-red-900/40 hover:bg-red-900/60 text-red-300 font-semibold text-sm border border-red-800 disabled:opacity-50 transition-all"
+                className="w-full py-2 px-3 rounded-lg bg-red-900/40 hover:bg-red-900/60 text-red-300 font-semibold text-sm border border-red-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 🗑️ Clear Index
               </button>

@@ -1,4 +1,4 @@
-use enigo::{Axis, Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
+use enigo::{Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
 
 pub struct InputController {
     enigo: Enigo,
@@ -11,7 +11,6 @@ impl InputController {
         InputController { enigo }
     }
 
-    // Mouse controls
     pub fn mouse_move(&mut self, x: i32, y: i32) {
         self.enigo.move_mouse(x, y, Coordinate::Abs).unwrap();
     }
@@ -29,10 +28,9 @@ impl InputController {
     }
 
     pub fn mouse_scroll(&mut self, amount: i32) {
-        self.enigo.scroll(amount, Axis::Vertical).unwrap();
+        self.enigo.scroll(amount, enigo::Axis::Vertical).unwrap();
     }
 
-    // Keyboard controls
     pub fn key_sequence(&mut self, text: &str) {
         self.enigo.text(text).unwrap();
     }

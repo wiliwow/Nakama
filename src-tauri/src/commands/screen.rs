@@ -1,4 +1,4 @@
-use base64::Engine as _;
+use base64::{Engine as _, engine::general_purpose::STANDARD};
 use image::{EncodableLayout, ImageBuffer, ImageOutputFormat};
 use screenshots::Screen;
 use serde::Serialize;
@@ -37,7 +37,7 @@ fn capture_to_data_url(screen: Screen) -> Result<ScreenCapture, String> {
 
     let data_url = format!(
         "data:image/png;base64,{}",
-        base64::engine::general_purpose::STANDARD.encode(&png_bytes)
+        STANDARD.encode(&png_bytes)
     );
 
     Ok(ScreenCapture {
@@ -70,4 +70,22 @@ pub async fn capture_all_screens() -> Result<Vec<ScreenCapture>, String> {
             Ok(capture)
         })
         .collect()
+}
+
+/// Get display dimensions for Computer Use tool configuration
+#[tauri::command]
+pub async fn get_display_info() -> Result<serde_json::Value, String> {
+    let screens = Screen::all().map_err(|e| e.to_string())?;
+    let primary = screens
+        .into_iter()
+        .min_by_key(|screen| screen.display_info.id)
+        .ok_or_else(|| "No screens available".to_string())?;
+    
+    let image = primary.capture().map_err(|e| e.to_string())?;
+    
+    Ok(serde_json::json!({
+        "display_width_px": image.width(),
+        "display_height_px": image.height(),
+        "display_number": primary.display_info.id
+    }))
 }
