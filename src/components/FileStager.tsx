@@ -5,7 +5,7 @@ import Badge from "./ui/Badge";
 interface FileStagerProps {
   files: { name: string; content: string }[];
   indexingFiles: boolean;
-  onIndexFiles: () => void;
+  onIndexFiles: (files: { name: string; content: string }[]) => void;
   onRemoveFile?: (index: number) => void;
 }
 
@@ -19,12 +19,12 @@ const FileStager: React.FC<FileStagerProps> = ({ files, indexingFiles, onIndexFi
           <Badge count={files.length} variant="warning" />
           <span className="text-xs text-slate-300">Staged Files</span>
         </div>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onIndexFiles}
-          disabled={indexingFiles}
-        >
+<Button
+           variant="secondary"
+           size="sm"
+           onClick={() => onIndexFiles(files)}
+           disabled={indexingFiles}
+         >
           {indexingFiles ? "Indexing..." : "Index Files"}
         </Button>
       </div>

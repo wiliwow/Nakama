@@ -1,4 +1,5 @@
 pub mod ai;
+pub mod memory;
 pub mod mouse;
 pub mod screen;
 pub mod recording;

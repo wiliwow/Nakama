@@ -1,0 +1,1313 @@
+﻿cargo :     Checking nakama v0.1.0 (C:\Users\wiliwow\Desktop\Nakama\src-tauri)
+Au caractère Ligne:1 : 59
++ ... "C:\Users\wiliwow\Desktop\Nakama\src-tauri"; cargo check 2>&1 | Out-F ...
++                                                  ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking na...kama\src-tauri):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0432]: unresolved import `tracing`
+ --> src\memory_agent.rs:4:5
+  |
+4 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+  --> src\lib.rs:15:5
+   |
+15 | use tracing::info;
+   |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+   |
+   = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_subscriber`
+  --> src\lib.rs:16:5
+   |
+16 | use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+   |     ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing_subscriber`
+  --> src\lib.rs:16:5
+   |
+16 | use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+   |     ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\ai_companion.rs:5:5
+  |
+5 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\commands\conversation.rs:5:5
+  |
+5 | use tracing::error;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\conversation.rs:5:5
+  |
+5 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\local_memory.rs:7:5
+  |
+7 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_appender`
+  --> src\lib.rs:68:25
+   |
+68 |     let file_appender = tracing_appender::rolling::daily(&log_dir, "nakama.log");
+   |                         ^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_appender`
+   |
+   = help: if you wanted to use a crate named `tracing_appender`, use `cargo add tracing_appender` to add it to your 
+`Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_subscriber`
+  --> src\lib.rs:80:35
+   |
+80 |                 .with_span_events(tracing_subscriber::fmt::format::FmtSpan::CLOSE),
+   |                                   ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate 
+`tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `fs`
+   --> src\lib.rs:112:17
+    |
+112 |         let _ = fs::create_dir_all(&config_dir);
+    |                 ^^ use of unresolved module or unlinked crate `fs`
+    |
+    = help: if you wanted to use a crate named `fs`, use `cargo add fs` to add it to your `Cargo.toml`
+help: consider importing one of these modules
+    |
+ 14 + use std::fs;
+    |
+ 14 + use tokio::fs;
+    |
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `fs`
+   --> src\lib.rs:122:13
+    |
+122 |     let _ = fs::create_dir_all(memory_db.parent().unwrap_or(&config_dir));
+    |             ^^ use of unresolved module or unlinked crate `fs`
+    |
+    = help: if you wanted to use a crate named `fs`, use `cargo add fs` to add it to your `Cargo.toml`
+help: consider importing one of these modules
+    |
+ 14 + use std::fs;
+    |
+ 14 + use tokio::fs;
+    |
+
+error[E0308]: mismatched types
+  --> src\commands\ai.rs:34:9
+   |
+34 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   --------------------------------- this 
+expression has type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+   |         |
+   |         expected future, found `(_, _, _, _)`
+   |
+   = note: expected opaque type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+                    found tuple `(_, _, _, _)`
+help: consider `await`ing on the `Future`
+   |
+34 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt).await;
+   |                                                                                                       ++++++
+
+error[E0308]: mismatched types
+  --> src\commands\ai.rs:57:9
+   |
+57 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   --------------------------------- this 
+expression has type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+   |         |
+   |         expected future, found `(_, _, _, _)`
+   |
+   = note: expected opaque type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+                    found tuple `(_, _, _, _)`
+help: consider `await`ing on the `Future`
+   |
+57 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt).await;
+   |                                                                                                       ++++++
+
+error[E0624]: method `build_prompt_with_context` is private
+  --> src\commands\ai.rs:84:12
+   |
+84 |         ai.build_prompt_with_context(prompt.clone(), &conversation_history)
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^ private method
+   |
+  ::: src\ai_companion.rs:76:5
+   |
+76 |     fn build_prompt_with_context(&self, prompt: String, history: &[ConversationMessage]) -> String {
+   |     ---------------------------------------------------------------------------------------------- private method 
+defined here
+
+error[E0624]: method `build_prompt_with_context` is private
+   --> src\commands\ai.rs:124:12
+    |
+124 |         ai.build_prompt_with_context(prompt.clone(), &conversation_history)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: src\ai_companion.rs:76:5
+    |
+ 76 |     fn build_prompt_with_context(&self, prompt: String, history: &[ConversationMessage]) -> String {
+    |     ---------------------------------------------------------------------------------------------- private 
+method defined here
+
+error[E0308]: mismatched types
+  --> src\commands\rag.rs:90:5
+   |
+90 |     crate::rag_indexer::compute_stats(&*store).await
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Result<IndexStats, String>`, found 
+`Result<IndexingStats, String>`
+   |
+   = note: expected enum `std::result::Result<IndexStats, _>`
+              found enum `std::result::Result<IndexingStats, _>`
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:181:80
+    |
+181 |             for row in rows { results.push(crate::models::StashMemory::from(row?)); }
+    |                                                                             ---^ the trait 
+`From<rusqlite::Error>` is not implemented for `std::string::String`
+    |                                                                             |
+    |                                                                             this can't be annotated with `?` 
+because it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:204:76
+    |
+204 |         for row in rows { results.push(crate::models::StashMemory::from(row?)); }
+    |                                                                         ---^ the trait `From<rusqlite::Error>` 
+is not implemented for `std::string::String`
+    |                                                                         |
+    |                                                                         this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:256:36
+    |
+256 |             let (id, content) = row?;
+    |                                 ---^ the trait `From<rusqlite::Error>` is not implemented for 
+`std::string::String`
+    |                                 |
+    |                                 this can't be annotated with `?` because it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:279:74
+    |
+279 |         for row in rows { results.push(crate::models::StashFact::from(row?)); }
+    |                                                                       ---^ the trait `From<rusqlite::Error>` is 
+not implemented for `std::string::String`
+    |                                                                       |
+    |                                                                       this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:296:74
+    |
+296 |         for row in rows { results.push(crate::models::StashGoal::from(row?)); }
+    |                                                                       ---^ the trait `From<rusqlite::Error>` is 
+not implemented for `std::string::String`
+    |                                                                       |
+    |                                                                       this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_subscriber`
+  --> src\lib.rs:70:5
+   |
+70 |     tracing_subscriber::registry()
+   |     ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:11:1
+    |
+ 11 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_init` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\memory_agent.rs:194:54
+    |
+184 |     pub async fn init_default_namespaces(&self) -> Result<(), String> {
+    |                                          ----- has type `&MemoryAgent` which is not `Send`
+...
+194 |             let _ = self.client.create_namespace(ns).await;
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_init` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:11:1
+    |
+ 11 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_init` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\memory_agent.rs:194:54
+    |
+184 |     pub async fn init_default_namespaces(&self) -> Result<(), String> {
+    |                                          ----- has type `&MemoryAgent` which is not `Send`
+...
+194 |             let _ = self.client.create_namespace(ns).await;
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_init` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:21:1
+    |
+ 21 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_remember` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:38:9
+    |
+ 38 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_remember` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:21:1
+    |
+ 21 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_remember` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:38:9
+    |
+ 38 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_remember` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:33:1
+    |
+ 33 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_recall` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:96:9
+    |
+ 96 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_recall` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:33:1
+    |
+ 33 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_recall` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:96:9
+    |
+ 96 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_recall` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:48:1
+    |
+ 48 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_query_facts` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:105:9
+    |
+105 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_query_facts` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:48:1
+    |
+ 48 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_query_facts` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:105:9
+    |
+105 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_query_facts` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:61:1
+    |
+ 61 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_list_goals` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:139:32
+    |
+139 |     pub async fn list_goals_ns(&self, namespace: &str) -> Result<Vec<StashGoal>, String> {
+    |                                ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_list_goals` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:61:1
+    |
+ 61 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_list_goals` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:139:32
+    |
+139 |     pub async fn list_goals_ns(&self, namespace: &str) -> Result<Vec<StashGoal>, String> {
+    |                                ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_list_goals` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:74:1
+    |
+ 74 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_create_goal` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:135:30
+    |
+135 |     pub async fn create_goal(&self, namespace: &str, description: &str) -> Result<i64, String> {
+    |                              ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_create_goal` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:74:1
+    |
+ 74 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_create_goal` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:135:30
+    |
+135 |     pub async fn create_goal(&self, namespace: &str, description: &str) -> Result<i64, String> {
+    |                              ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_create_goal` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:86:1
+    |
+ 86 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_complete_goal` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:147:32
+    |
+147 |     pub async fn complete_goal(&self, namespace: &str, goal_id: i64) -> Result<(), String> {
+    |                                ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_complete_goal` which comes from the expansion of the 
+macro `tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:86:1
+    |
+ 86 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_complete_goal` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:147:32
+    |
+147 |     pub async fn complete_goal(&self, namespace: &str, goal_id: i64) -> Result<(), String> {
+    |                                ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_complete_goal` which comes from the expansion of the 
+macro `tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:98:1
+    |
+ 98 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_record_failure` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:152:9
+    |
+152 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_record_failure` which comes from the expansion of the 
+macro `tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:98:1
+    |
+ 98 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_record_failure` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:152:9
+    |
+152 |         &self,
+    |         ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_record_failure` which comes from the expansion of the 
+macro `tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:112:1
+    |
+112 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_set_context` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:179:38
+    |
+179 |     pub async fn set_working_context(&self, task: &str, active_goals: &[String]) -> Result<(), String> {
+    |                                      ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is 
+not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_set_context` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:112:1
+    |
+112 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_set_context` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:179:38
+    |
+179 |     pub async fn set_working_context(&self, task: &str, active_goals: &[String]) -> Result<(), String> {
+    |                                      ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is 
+not `Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_set_context` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:123:1
+    |
+123 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_summary` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_summary` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:123:1
+    |
+123 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_summary` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_summary` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:131:1
+    |
+131 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_consolidate` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:143:33
+    |
+143 |     pub async fn consolidate_ns(&self, namespace: &str) -> Result<(), String> {
+    |                                 ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_consolidate` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:131:1
+    |
+131 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_consolidate` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: captured value is not `Send` because `&` references cannot be sent unless their referent is `Sync`
+   --> src\memory_agent.rs:143:33
+    |
+143 |     pub async fn consolidate_ns(&self, namespace: &str) -> Result<(), String> {
+    |                                 ^^^^^ has type `&MemoryAgent` which is not `Send`, because `MemoryAgent` is not 
+`Sync`
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_consolidate` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:149:1
+    |
+149 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_build_prompt` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\memory_agent.rs:166:63
+    |
+165 |     pub async fn build_memory_prompt(&self, user_prompt: &str) -> Result<String, String> {
+    |                                      ----- has type `&MemoryAgent` which is not `Send`
+166 |         let memories = self.recall_all(user_prompt, Some(10)).await?;
+    |                                                               ^^^^^ await occurs here, with `&self` maybe used 
+later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_build_prompt` which comes from the expansion of the 
+macro `tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:149:1
+    |
+149 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_build_prompt` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `MemoryAgent`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\memory_agent.rs:166:63
+    |
+165 |     pub async fn build_memory_prompt(&self, user_prompt: &str) -> Result<String, String> {
+    |                                      ----- has type `&MemoryAgent` which is not `Send`
+166 |         let memories = self.recall_all(user_prompt, Some(10)).await?;
+    |                                                               ^^^^^ await occurs here, with `&self` maybe used 
+later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_build_prompt` which comes from the expansion of the 
+macro `tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:159:1
+    |
+159 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `autonomy_status` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__autonomy_status` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:159:1
+    |
+159 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `autonomy_status` is not `Send`
+    |
+   ::: src\lib.rs:143:38
+    |
+143 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+144 | |             mouse_move,
+145 | |             mouse_click,
+146 | |             mouse_drag,
+...   |
+195 | |             autonomy_status,
+196 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__autonomy_status` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unused variable: `data`
+  --> src\rag_indexer.rs:45:13
+   |
+45 |         let data: HashMap<String, IndexedDocumentMetadata> = serde_json::from_str(&content)
+   |             ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+Some errors have detailed explanations: E0277, E0308, E0432, E0433, E0624.
+For more information about an error, try `rustc --explain E0277`.
+warning: `nakama` (lib) generated 1 warning
+error: could not compile `nakama` (lib) due to 75 previous errors; 1 warning emitted

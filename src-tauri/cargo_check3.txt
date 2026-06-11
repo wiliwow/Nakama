@@ -1,0 +1,301 @@
+﻿cargo :     Updating crates.io index
+Au caractère Ligne:1 : 59
++ ... "C:\Users\wiliwow\Desktop\Nakama\src-tauri"; cargo check 2>&1 | Out-F ...
++                                                  ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Updating crates.io index:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+     Locking 10 packages to latest compatible versions
+      Adding matchers v0.2.0
+      Adding nu-ansi-term v0.50.3
+      Adding sharded-slab v0.1.7
+      Adding symlink v0.1.0
+      Adding thread_local v1.1.9
+      Adding tracing-appender v0.2.5
+      Adding tracing-log v0.2.0
+      Adding tracing-serde v0.2.0
+      Adding tracing-subscriber v0.3.23
+      Adding valuable v0.1.1
+    Checking tracing-core v0.1.36
+    Checking tokio v1.50.0
+   Compiling tauri-build v2.5.6
+    Checking jsonptr v0.6.3
+    Checking num-complex v0.4.6
+    Checking dyn-stack v0.13.2
+    Checking wry v0.54.2
+    Checking tao v0.34.6
+    Checking json-patch v3.0.1
+    Checking serialize-to-javascript v0.1.2
+    Checking pulp v0.22.2
+    Checking tracing v0.1.44
+    Checking muda v0.17.1
+    Checking tauri-utils v2.8.3
+    Checking softbuffer v0.4.8
+    Checking ahash v0.8.12
+   Compiling tauri v2.10.3
+    Checking exr v1.74.0
+    Checking hashbrown v0.14.5
+    Checking tracing-serde v0.2.0
+    Checking tracing-log v0.2.0
+    Checking qoi v0.4.1
+    Checking tracing-subscriber v0.3.23
+    Checking rfd v0.16.0
+    Checking tokio-util v0.7.18
+    Checking tower v0.5.3
+    Checking tokio-native-tls v0.3.1
+    Checking tower-http v0.6.8
+    Checking h2 v0.4.13
+    Checking hashlink v0.9.1
+    Checking gemm-common v0.19.0
+   Compiling nakama v0.1.0 (C:\Users\wiliwow\Desktop\Nakama\src-tauri)
+    Checking safetensors v0.7.0
+    Checking gemm-f32 v0.19.0
+    Checking gemm-f64 v0.19.0
+    Checking gemm-c64 v0.19.0
+    Checking gemm-f16 v0.19.0
+    Checking gemm-c32 v0.19.0
+    Checking image v0.24.9
+    Checking float8 v0.6.1
+    Checking chrono v0.4.41
+    Checking rusqlite v0.32.1
+    Checking tauri-runtime v2.10.1
+    Checking gemm v0.19.0
+    Checking tracing-appender v0.2.5
+    Checking candle-core v0.9.2
+    Checking hyper v1.8.1
+   Compiling tauri-plugin-fs v2.4.5
+   Compiling tauri-plugin-opener v2.5.3
+    Checking tauri-runtime-wry v2.10.1
+   Compiling tauri-plugin-mic-recorder v2.0.0
+    Checking tokio-stream v0.1.18
+   Compiling tauri-plugin-dialog v2.6.0
+    Checking hyper-util v0.1.20
+    Checking screenshots v0.8.10
+    Checking hyper-tls v0.6.0
+    Checking reqwest v0.12.28
+error: cannot find macro `warn` in this scope
+  --> src\memory_agent.rs:73:27
+   |
+73 |                 Err(e) => warn!(error = %e, namespace = %ns, "memory: query_facts failed"),
+   |                           ^^^^
+   |
+   = note: `warn` is in scope, but it is an attribute: `#[warn]`
+help: consider importing this macro
+   |
+ 1 + use tracing::warn;
+   |
+
+error: cannot find macro `warn` in this scope
+  --> src\memory_agent.rs:85:27
+   |
+85 |                 Err(e) => warn!(error = %e, namespace = %ns, "memory: list_goals failed"),
+   |                           ^^^^
+   |
+   = note: `warn` is in scope, but it is an attribute: `#[warn]`
+help: consider importing this macro
+   |
+ 1 + use tracing::warn;
+   |
+
+error: cannot find macro `warn` in this scope
+  --> src\memory_agent.rs:52:29
+   |
+52 |                 Err(e) => { warn!(error = %e, namespace = %ns, "memory: recall failed for namespace"); continue; }
+   |                             ^^^^
+   |
+   = note: `warn` is in scope, but it is an attribute: `#[warn]`
+help: consider importing this macro
+   |
+ 1 + use tracing::warn;
+   |
+
+error[E0412]: cannot find type `IndexingStats` in this scope
+   --> src\rag_indexer.rs:117:18
+    |
+109 | pub struct IndexStats {
+    | --------------------- similarly named struct `IndexStats` defined here
+...
+117 | impl Default for IndexingStats {
+    |                  ^^^^^^^^^^^^^ help: a struct with a similar name exists: `IndexStats`
+
+error[E0412]: cannot find type `IndexingStats` in this scope
+   --> src\rag_indexer.rs:129:56
+    |
+109 | pub struct IndexStats {
+    | --------------------- similarly named struct `IndexStats` defined here
+...
+129 | pub async fn compute_stats(store: &RAGIndex) -> Result<IndexingStats, String> {
+    |                                                        ^^^^^^^^^^^^^
+    |
+help: a struct with a similar name exists
+    |
+129 - pub async fn compute_stats(store: &RAGIndex) -> Result<IndexingStats, String> {
+129 + pub async fn compute_stats(store: &RAGIndex) -> Result<IndexStats, String> {
+    |
+help: you might be missing a type parameter
+    |
+129 | pub async fn compute_stats<IndexingStats>(store: &RAGIndex) -> Result<IndexingStats, String> {
+    |                           +++++++++++++++
+
+warning: unused import: `tracing::warn`
+ --> src\local_memory.rs:7:5
+  |
+7 | use tracing::warn;
+  |     ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::time::SystemTime`
+ --> src\memory.rs:2:5
+  |
+2 | use std::time::SystemTime;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+
+error[E0624]: method `build_prompt_with_context` is private
+  --> src\commands\ai.rs:84:12
+   |
+84 |         ai.build_prompt_with_context(prompt.clone(), &conversation_history)
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^ private method
+   |
+  ::: src\ai_companion.rs:76:5
+   |
+76 |     fn build_prompt_with_context(&self, prompt: String, history: &[ConversationMessage]) -> String {
+   |     ---------------------------------------------------------------------------------------------- private method 
+defined here
+
+error[E0624]: method `build_prompt_with_context` is private
+   --> src\commands\ai.rs:124:12
+    |
+124 |         ai.build_prompt_with_context(prompt.clone(), &conversation_history)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: src\ai_companion.rs:76:5
+    |
+ 76 |     fn build_prompt_with_context(&self, prompt: String, history: &[ConversationMessage]) -> String {
+    |     ---------------------------------------------------------------------------------------------- private 
+method defined here
+
+error[E0433]: failed to resolve: use of undeclared type `IndexingStats`
+   --> src\rag_indexer.rs:131:21
+    |
+131 |     let mut stats = IndexingStats::default();
+    |                     ^^^^^^^^^^^^^
+    |                     |
+    |                     use of undeclared type `IndexingStats`
+    |                     help: a struct with a similar name exists: `IndexStats`
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:177:76
+    |
+177 |         for row in rows { results.push(crate::models::StashMemory::from(row?)); }
+    |                                                                         ---^ the trait `From<rusqlite::Error>` 
+is not implemented for `std::string::String`
+    |                                                                         |
+    |                                                                         this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:229:36
+    |
+229 |             let (id, content) = row?;
+    |                                 ---^ the trait `From<rusqlite::Error>` is not implemented for 
+`std::string::String`
+    |                                 |
+    |                                 this can't be annotated with `?` because it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:252:74
+    |
+252 |         for row in rows { results.push(crate::models::StashFact::from(row?)); }
+    |                                                                       ---^ the trait `From<rusqlite::Error>` is 
+not implemented for `std::string::String`
+    |                                                                       |
+    |                                                                       this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:269:74
+    |
+269 |         for row in rows { results.push(crate::models::StashGoal::from(row?)); }
+    |                                                                       ---^ the trait `From<rusqlite::Error>` is 
+not implemented for `std::string::String`
+    |                                                                       |
+    |                                                                       this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+warning: unused variable: `model`
+   --> src\ai_companion.rs:199:9
+    |
+199 |         model: String,
+    |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_model`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `score`
+  --> src\memory.rs:48:29
+   |
+48 |                 if let Some(score) = p.score {
+   |                             ^^^^^ help: if this is intentional, prefix it with an underscore: `_score`
+
+warning: unused variable: `data`
+  --> src\rag_indexer.rs:45:13
+   |
+45 |         let data: HashMap<String, IndexedDocumentMetadata> = serde_json::from_str(&content)
+   |             ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
+
+Some errors have detailed explanations: E0277, E0412, E0433, E0624.
+For more information about an error, try `rustc --explain E0277`.
+warning: `nakama` (lib) generated 5 warnings
+error: could not compile `nakama` (lib) due to 12 previous errors; 5 warnings emitted

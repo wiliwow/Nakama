@@ -9,7 +9,7 @@ pub static VOICE_RECORDING: AtomicBool = AtomicBool::new(false);
 
 #[derive(Serialize)]
 struct RecordingSummary {
-    video_path: String,
+    frames_dir: String,
     keylog_path: String,
     duration_seconds: u64,
 }
@@ -39,7 +39,7 @@ pub fn stop_screen_recording() -> Result<String, String> {
     // read last recording info
     if let Some(info) = get_last_recording_info() {
         let summary = RecordingSummary {
-            video_path: info.video_path,
+            frames_dir: info.frames_dir,
             keylog_path: info.keylog_path,
             duration_seconds: info.duration_seconds,
         };

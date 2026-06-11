@@ -1,4 +1,5 @@
 import React from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 interface Conversation {
   id?: number;
@@ -14,6 +15,7 @@ interface ConversationListProps {
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({ conversations, onSelect, onClose }) => {
+  useFocusTrap(true);
   return (
     <>
       {/* Backdrop */}

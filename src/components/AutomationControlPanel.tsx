@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-
-interface AutomationMessage {
-  sender: string;
-  text: string;
-}
+import { useToast } from "../contexts/ToastContext";
+import { AutomationMessage } from "../types";
 
 const AutomationControlPanel: React.FC = () => {
+  const { showToast } = useToast();
+
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [drag, setDrag] = useState({ startX: 0, startY: 0, endX: 0, endY: 0 });
   const [scrollAmount, setScrollAmount] = useState(10);
@@ -17,39 +16,50 @@ const AutomationControlPanel: React.FC = () => {
   const [messages, setMessages] = useState<AutomationMessage[]>([]);
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
-  const runCommand = async (name: string, payload: any) => {
+  const runCommand = useCallback(async (name: string, payload: Record<string, unknown>) => {
     setLoadingAction(name);
+    setStatus(null);
     try {
       await invoke(name, payload);
       setStatus(`${name} succeeded`);
+      showToast(`${name} executed successfully`, { type: "success", duration: 2000 });
     } catch (err) {
-      console.error(err);
-      setStatus(`Error: ${String(err)}`);
+      const msg = `Error: ${String(err)}`;
+      console.error(msg);
+      setStatus(msg);
+      showToast(msg, { type: "error" });
     } finally {
       setLoadingAction(null);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
-    const unlistenAction = listen("ai-action-executed", (event) => {
-      console.log("AI executed:", event.payload);
-      setMessages(msgs => [...msgs, {
-        sender: "system",
-        text: `✓ ${event.payload}`
-      }]);
-    });
+    let unlistenAction: (() => void) | undefined;
+    let unlistenError: (() => void) | undefined;
 
-    const unlistenError = listen("ai-action-error", (event) => {
-      console.log("AI action failed:", event.payload);
-      setMessages(msgs => [...msgs, {
-        sender: "system",
-        text: `✗ Action failed: ${event.payload}`
-      }]);
-    });
+    const setupListeners = async () => {
+      unlistenAction = await listen("ai-action-executed", (event) => {
+        console.log("AI executed:", event.payload);
+        setMessages((msgs) => [
+          ...msgs,
+          { sender: "system", text: `✓ ${event.payload}` },
+        ]);
+      });
+
+      unlistenError = await listen("ai-action-error", (event) => {
+        console.log("AI action failed:", event.payload);
+        setMessages((msgs) => [
+          ...msgs,
+          { sender: "system", text: `✗ Action failed: ${event.payload}` },
+        ]);
+      });
+    };
+
+    setupListeners();
 
     return () => {
-      unlistenAction.then(f => f());
-      unlistenError.then(f => f());
+      unlistenAction?.();
+      unlistenError?.();
     };
   }, []);
 
@@ -63,16 +73,22 @@ const AutomationControlPanel: React.FC = () => {
             <input
               type="number"
               value={coords.x}
-              onChange={(e) => setCoords((prev) => ({ ...prev, x: Number(e.target.value) }))}
+              onChange={(e) =>
+                setCoords((prev) => ({ ...prev, x: Number(e.target.value) }))
+              }
               className="w-20 px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="x"
+              aria-label="X coordinate"
             />
             <input
               type="number"
               value={coords.y}
-              onChange={(e) => setCoords((prev) => ({ ...prev, y: Number(e.target.value) }))}
+              onChange={(e) =>
+                setCoords((prev) => ({ ...prev, y: Number(e.target.value) }))
+              }
               className="w-20 px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="y"
+              aria-label="Y coordinate"
             />
             <button
               type="button"
@@ -86,7 +102,7 @@ const AutomationControlPanel: React.FC = () => {
 
           <div className="text-xs text-blue-300 font-medium">Click:</div>
           <div className="flex gap-2 flex-wrap">
-            {['left', 'right', 'middle'].map((button) => (
+            {["left", "right", "middle"].map((button) => (
               <button
                 key={button}
                 type="button"
@@ -102,40 +118,61 @@ const AutomationControlPanel: React.FC = () => {
 
         {/* Drag & Scroll */}
         <div className="space-y-2.5">
-          <div className="text-xs text-blue-300 font-medium">Drag (from → to):</div>
+          <div className="text-xs text-blue-300 font-medium">
+            Drag (from → to):
+          </div>
           <div className="grid grid-cols-2 gap-2">
             <input
               type="number"
               value={drag.startX}
-              onChange={(e) => setDrag((prev) => ({ ...prev, startX: Number(e.target.value) }))}
+              onChange={(e) =>
+                setDrag((prev) => ({ ...prev, startX: Number(e.target.value) }))
+              }
               className="w-full px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="from x"
+              aria-label="Drag start X"
             />
             <input
               type="number"
               value={drag.startY}
-              onChange={(e) => setDrag((prev) => ({ ...prev, startY: Number(e.target.value) }))}
+              onChange={(e) =>
+                setDrag((prev) => ({ ...prev, startY: Number(e.target.value) }))
+              }
               className="w-full px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="from y"
+              aria-label="Drag start Y"
             />
             <input
               type="number"
               value={drag.endX}
-              onChange={(e) => setDrag((prev) => ({ ...prev, endX: Number(e.target.value) }))}
+              onChange={(e) =>
+                setDrag((prev) => ({ ...prev, endX: Number(e.target.value) }))
+              }
               className="w-full px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="to x"
+              aria-label="Drag end X"
             />
             <input
               type="number"
               value={drag.endY}
-              onChange={(e) => setDrag((prev) => ({ ...prev, endY: Number(e.target.value) }))}
+              onChange={(e) =>
+                setDrag((prev) => ({ ...prev, endY: Number(e.target.value) }))
+              }
               className="w-full px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="to y"
+              aria-label="Drag end Y"
             />
           </div>
           <button
             type="button"
-            onClick={() => runCommand("mouse_drag", { startX: drag.startX, startY: drag.startY, endX: drag.endX, endY: drag.endY })}
+            onClick={() =>
+              runCommand("mouse_drag", {
+                startX: drag.startX,
+                startY: drag.startY,
+                endX: drag.endX,
+                endY: drag.endY,
+              })
+            }
             disabled={loadingAction === "mouse_drag"}
             className="w-full px-3 py-1.5 rounded bg-emerald-700 hover:bg-emerald-600 text-white text-xs disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
@@ -155,10 +192,13 @@ const AutomationControlPanel: React.FC = () => {
               value={scrollAmount}
               onChange={(e) => setScrollAmount(Number(e.target.value))}
               className="w-20 px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
+              aria-label="Scroll amount"
             />
             <button
               type="button"
-              onClick={() => runCommand("mouse_scroll", { amount: scrollAmount })}
+              onClick={() =>
+                runCommand("mouse_scroll", { amount: scrollAmount })
+              }
               disabled={loadingAction === "mouse_scroll"}
               className="px-3 py-1.5 rounded bg-indigo-700 hover:bg-indigo-600 text-white text-xs disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
@@ -176,6 +216,7 @@ const AutomationControlPanel: React.FC = () => {
               onChange={(e) => setText(e.target.value)}
               className="flex-1 px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="text to type"
+              aria-label="Text to type"
             />
             <button
               type="button"
@@ -194,6 +235,7 @@ const AutomationControlPanel: React.FC = () => {
               onChange={(e) => setKey(e.target.value)}
               className="flex-1 px-2 py-1.5 rounded bg-slate-800 border border-slate-700 text-white text-xs focus:border-blue-500 focus:outline-none transition-colors"
               placeholder="enter, tab..."
+              aria-label="Key to press"
             />
             <button
               type="button"
@@ -210,9 +252,26 @@ const AutomationControlPanel: React.FC = () => {
       {/* Status messages */}
       {(status || messages.length > 0) && (
         <div className="border-t border-slate-700/50 pt-3 space-y-1">
-          {status && <div className="text-xs text-blue-200">{status}</div>}
+          {status && (
+            <div
+              className={`text-xs ${
+                status.startsWith("Error")
+                  ? "text-red-300"
+                  : "text-blue-200"
+              }`}
+            >
+              {status}
+            </div>
+          )}
           {messages.map((msg, idx) => (
-            <div key={idx} className="text-xs text-blue-200">{msg.text}</div>
+            <div
+              key={idx}
+              className={`text-xs ${
+                msg.sender === "system" ? "text-blue-200" : "text-slate-400"
+              }`}
+            >
+              {msg.text}
+            </div>
           ))}
         </div>
       )}

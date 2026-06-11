@@ -1,7 +1,6 @@
 use tauri::{Window, State, Emitter};
 use std::sync::Arc;
 use tokio::sync::Mutex as TokioMutex;
-use tokio_stream::StreamExt;
 use enigo::{Button, Key};
 use crate::{AICompanion, AppState};
 use crate::commands::ai::parse_ai_actions;
@@ -13,60 +12,18 @@ pub async fn execute_ai_with_actions(
     window: Window,
     ai_state: State<'_, Arc<TokioMutex<AICompanion>>>,
     app_state: State<'_, AppState>,
+    image_b64: Option<String>,
 ) -> Result<(), String> {
-    // Build prompt with action instructions system prompt
-    let system_prompt = "You are a helpful AI assistant that can control the user's computer through mouse and keyboard actions.\n\nYou can execute computer control actions by including specific commands in your response:\n- Mouse movement: \"move to 100,200\" or \"go to coordinates (100,200)\"\n- Clicking: \"click at 100,200\" or \"right click\" or \"middle click\"\n- Dragging: \"drag from 100,100 to 200,200\"\n- Scrolling: \"scroll up 50\" or \"scroll down 100\"\n- Typing: \"type hello world\"\n- Key presses: \"press enter\" or \"hit escape\" or \"press ctrl+c\" or \"ctrl a\"\n\nWhen the user asks you to perform an action, describe what you're doing AND include the command.\nAnswer user questions clearly and directly.";
+    let ai = ai_state.lock().await;
 
-    // Build conversation context with system prompt
-    let full_prompt = if conversation_history.is_empty() {
-        format!("{}\n\nUser: {}\n\nAssistant:", system_prompt, prompt)
-    } else {
-        let mut p = system_prompt.to_string();
-        for msg in &conversation_history {
-            let role = match msg.role.as_str() {
-                "user" => "User",
-                "assistant" => "Assistant",
-                _ => "Unknown",
-            };
-            p.push_str(&format!("\n\n{}: {}", role, msg.content));
-        }
-        p.push_str(&format!("\n\nUser: {}\n\nAssistant:", prompt));
-        p
-    };
+    // One-shot completion so we have the full text to parse actions from
+    let full_response = ai
+        .generate_completion(prompt, &conversation_history, image_b64.as_deref())
+        .await?;
 
-    // Get model name
-    let model = {
-        let ai = ai_state.lock().await;
-        ai.model_clone()
-    };
-
-    // Stream the response directly (no spawn to keep access to app_state)
-    let client = ollama_rs::Ollama::default();
-    let request = ollama_rs::generation::completion::request::GenerationRequest::new(model, full_prompt);
-    let mut full_response = String::new();
-
-    match client.generate_stream(request).await {
-        Ok(mut stream) => {
-            while let Some(chunk_res) = stream.next().await {
-                match chunk_res {
-                    Ok(chunks) => {
-                        for piece in chunks {
-                            full_response.push_str(&piece.response);
-                            let _ = window.emit("ai-stream-chunk", piece.response.clone());
-                        }
-                    }
-                    Err(e) => {
-                        let _ = window.emit("ai-stream-error", e.to_string());
-                        return Err(e.to_string());
-                    }
-                }
-            }
-        }
-        Err(e) => {
-            let _ = window.emit("ai-stream-error", e.to_string());
-            return Err(e.to_string());
-        }
-    }
+    // Stream the same response into the UI and signal completion
+    let _ = window.emit("ai-stream-chunk", &full_response);
+    let _ = window.emit("ai-stream-done", ());
 
     // Parse and execute AI actions from the full response
     let actions = parse_ai_actions(&full_response).await;
@@ -177,6 +134,5 @@ pub async fn execute_ai_with_actions(
         }
     }
 
-    let _ = window.emit("ai-stream-done", ());
     Ok(())
 }

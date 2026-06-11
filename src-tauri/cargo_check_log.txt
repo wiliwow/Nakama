@@ -1,0 +1,706 @@
+﻿cargo :    Compiling icu_locale_core v2.1.1
+Au caractère Ligne:1 : 59
++ ... "C:\Users\wiliwow\Desktop\Nakama\src-tauri"; cargo check 2>&1 | Out-F ...
++                                                  ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling icu_locale_core v2.1.1:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   Compiling markup5ever v0.14.1
+    Checking zerocopy v0.8.40
+   Compiling selectors v0.24.0
+   Compiling cargo_metadata v0.19.2
+   Compiling json-patch v3.0.1
+   Compiling serde_with v3.17.0
+   Compiling bytemuck_derive v1.8.1
+   Compiling icu_provider v2.1.1
+   Compiling html5ever v0.29.1
+    Checking potential_utf v0.1.4
+    Checking zerotrie v0.2.3
+    Checking bytemuck v1.23.1
+   Compiling icu_normalizer v2.1.1
+   Compiling icu_properties v2.1.2
+   Compiling windows-implement v0.60.2
+   Compiling kuchikiki v0.8.8-speedreader
+   Compiling windows-interface v0.59.3
+    Checking icu_collections v2.1.1
+    Checking socket2 v0.6.2
+   Compiling tokio-macros v2.6.1
+   Compiling cargo_toml v0.22.3
+    Checking windows-core v0.61.2
+   Compiling webview2-com-sys v0.38.2
+    Checking ppv-lite86 v0.2.21
+    Checking tokio v1.50.0
+    Checking thiserror v2.0.18
+    Checking dpi v0.1.2
+    Checking jsonptr v0.6.3
+    Checking num-complex v0.4.6
+    Checking windows-collections v0.2.0
+    Checking windows-future v0.2.1
+    Checking rand_chacha v0.9.0
+    Checking rand v0.9.2
+    Checking windows-numerics v0.2.0
+   Compiling idna_adapter v1.2.1
+    Checking thiserror v1.0.69
+   Compiling idna v1.1.0
+    Checking windows v0.61.3
+   Compiling webview2-com-macros v0.8.1
+    Checking pulp v0.22.2
+    Checking rand_distr v0.5.1
+    Checking url v2.5.8
+    Checking urlpattern v0.3.0
+    Checking dyn-stack v0.13.2
+   Compiling schemars v0.8.22
+    Checking half v2.7.1
+    Checking phf v0.11.3
+    Checking keyboard-types v0.7.0
+   Compiling serialize-to-javascript-impl v0.1.2
+   Compiling serde_repr v0.1.20
+    Checking serialize-to-javascript v0.1.2
+   Compiling tauri-utils v2.8.3
+    Checking gemm-common v0.19.0
+    Checking muda v0.17.1
+    Checking ahash v0.8.12
+    Checking gemm-f32 v0.19.0
+    Checking exr v1.74.0
+    Checking hashbrown v0.14.5
+    Checking gemm-f16 v0.19.0
+    Checking gemm-f64 v0.19.0
+    Checking gemm-c64 v0.19.0
+    Checking gemm-c32 v0.19.0
+   Compiling clap_derive v4.5.55
+    Checking qoi v0.4.1
+    Checking serde_urlencoded v0.7.1
+    Checking gemm v0.19.0
+    Checking tokio-util v0.7.18
+    Checking tower v0.5.3
+    Checking tokio-native-tls v0.3.1
+    Checking hashlink v0.9.1
+    Checking image v0.24.9
+    Checking rand_chacha v0.3.1
+    Checking h2 v0.4.13
+    Checking tower-http v0.6.8
+    Checking rfd v0.16.0
+    Checking float8 v0.6.1
+    Checking clap v4.5.60
+    Checking safetensors v0.7.0
+    Checking chrono v0.4.41
+    Checking rusqlite v0.32.1
+    Checking candle-core v0.9.2
+    Checking rand v0.8.5
+    Checking tokio-stream v0.1.18
+    Checking hyper v1.8.1
+    Checking screenshots v0.8.10
+   Compiling tauri-plugin v2.5.4
+   Compiling tauri-build v2.5.6
+   Compiling tauri-codegen v2.5.5
+    Checking hyper-util v0.1.20
+    Checking hyper-tls v0.6.0
+    Checking reqwest v0.12.28
+   Compiling tauri v2.10.3
+   Compiling tauri-macros v2.5.5
+   Compiling tauri-plugin-fs v2.4.5
+   Compiling tauri-plugin-mic-recorder v2.0.0
+   Compiling tauri-plugin-dialog v2.6.0
+   Compiling tauri-plugin-opener v2.5.3
+   Compiling nakama v0.1.0 (C:\Users\wiliwow\Desktop\Nakama\src-tauri)
+    Checking tao v0.34.6
+    Checking enigo v0.5.0
+    Checking webview2-com v0.38.2
+    Checking tauri-runtime v2.10.1
+    Checking wry v0.54.2
+    Checking tauri-runtime-wry v2.10.1
+error[E0432]: unresolved import `tracing`
+ --> src\memory_agent.rs:4:5
+  |
+4 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+  --> src\lib.rs:15:5
+   |
+15 | use tracing::info;
+   |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+   |
+   = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_subscriber`
+  --> src\lib.rs:16:5
+   |
+16 | use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+   |     ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing_subscriber`
+  --> src\lib.rs:16:5
+   |
+16 | use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
+   |     ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\ai_companion.rs:5:5
+  |
+5 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\commands\conversation.rs:5:5
+  |
+5 | use tracing::error;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\conversation.rs:5:5
+  |
+5 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0432]: unresolved import `tracing`
+ --> src\local_memory.rs:7:5
+  |
+7 | use tracing::warn;
+  |     ^^^^^^^ use of unresolved module or unlinked crate `tracing`
+  |
+  = help: if you wanted to use a crate named `tracing`, use `cargo add tracing` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_appender`
+  --> src\lib.rs:69:25
+   |
+69 |     let file_appender = tracing_appender::rolling::daily(&log_dir, "nakama.log");
+   |                         ^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_appender`
+   |
+   = help: if you wanted to use a crate named `tracing_appender`, use `cargo add tracing_appender` to add it to your 
+`Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_subscriber`
+  --> src\lib.rs:81:35
+   |
+81 |                 .with_span_events(tracing_subscriber::fmt::format::FmtSpan::CLOSE),
+   |                                   ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate 
+`tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `fs`
+   --> src\lib.rs:113:17
+    |
+113 |         let _ = fs::create_dir_all(&config_dir);
+    |                 ^^ use of unresolved module or unlinked crate `fs`
+    |
+    = help: if you wanted to use a crate named `fs`, use `cargo add fs` to add it to your `Cargo.toml`
+help: consider importing one of these modules
+    |
+ 14 + use std::fs;
+    |
+ 14 + use tokio::fs;
+    |
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `fs`
+   --> src\lib.rs:124:17
+    |
+124 |         let _ = fs::create_dir_all(memory_db.parent().unwrap_or(&config_dir));
+    |                 ^^ use of unresolved module or unlinked crate `fs`
+    |
+    = help: if you wanted to use a crate named `fs`, use `cargo add fs` to add it to your `Cargo.toml`
+help: consider importing one of these modules
+    |
+ 14 + use std::fs;
+    |
+ 14 + use tokio::fs;
+    |
+
+error[E0308]: mismatched types
+  --> src\commands\ai.rs:34:9
+   |
+34 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   --------------------------------- this 
+expression has type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+   |         |
+   |         expected future, found `(_, _, _, _)`
+   |
+   = note: expected opaque type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+                    found tuple `(_, _, _, _)`
+help: consider `await`ing on the `Future`
+   |
+34 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt).await;
+   |                                                                                                       ++++++
+
+error[E0308]: mismatched types
+  --> src\commands\ai.rs:57:9
+   |
+57 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   --------------------------------- this 
+expression has type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+   |         |
+   |         expected future, found `(_, _, _, _)`
+   |
+   = note: expected opaque type `impl Future<Output = (std::string::String, bool, usize, Vec<()>)>`
+                    found tuple `(_, _, _, _)`
+help: consider `await`ing on the `Future`
+   |
+57 |     let (enhanced_prompt, rag_used, passages_retrieved, _passages) = build_prompt_with_context(prompt).await;
+   |                                                                                                       ++++++
+
+error[E0624]: method `build_prompt_with_context` is private
+  --> src\commands\ai.rs:84:12
+   |
+84 |         ai.build_prompt_with_context(prompt.clone(), &conversation_history)
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^ private method
+   |
+  ::: src\ai_companion.rs:76:5
+   |
+76 |     fn build_prompt_with_context(&self, prompt: String, history: &[ConversationMessage]) -> String {
+   |     ---------------------------------------------------------------------------------------------- private method 
+defined here
+
+error[E0624]: method `build_prompt_with_context` is private
+   --> src\commands\ai.rs:124:12
+    |
+124 |         ai.build_prompt_with_context(prompt.clone(), &conversation_history)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: src\ai_companion.rs:76:5
+    |
+ 76 |     fn build_prompt_with_context(&self, prompt: String, history: &[ConversationMessage]) -> String {
+    |     ---------------------------------------------------------------------------------------------- private 
+method defined here
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:14:41
+   |
+14 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:27:41
+   |
+27 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:39:41
+   |
+39 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:52:41
+   |
+52 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:65:41
+   |
+65 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:79:41
+   |
+79 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+  --> src\commands\memory.rs:91:41
+   |
+91 |     let agent = MemoryAgent::new(client.clone());
+   |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, LocalMemoryClient>`
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following trait defines an item `clone`, perhaps you need to implement it:
+           candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+   --> src\commands\memory.rs:105:41
+    |
+105 |     let agent = MemoryAgent::new(client.clone());
+    |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, 
+LocalMemoryClient>`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following trait defines an item `clone`, perhaps you need to implement it:
+            candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+   --> src\commands\memory.rs:117:41
+    |
+117 |     let agent = MemoryAgent::new(client.clone());
+    |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, 
+LocalMemoryClient>`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following trait defines an item `clone`, perhaps you need to implement it:
+            candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+   --> src\commands\memory.rs:135:41
+    |
+135 |     let agent = MemoryAgent::new(client.clone());
+    |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, 
+LocalMemoryClient>`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following trait defines an item `clone`, perhaps you need to implement it:
+            candidate #1: `Clone`
+
+error[E0599]: no method named `clone` found for struct `tokio::sync::MutexGuard<'_, LocalMemoryClient>` in the current 
+scope
+   --> src\commands\memory.rs:153:41
+    |
+153 |     let agent = MemoryAgent::new(client.clone());
+    |                                         ^^^^^ method not found in `tokio::sync::MutexGuard<'_, 
+LocalMemoryClient>`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+    = note: the following trait defines an item `clone`, perhaps you need to implement it:
+            candidate #1: `Clone`
+
+error[E0308]: mismatched types
+  --> src\commands\rag.rs:90:5
+   |
+90 |     crate::rag_indexer::compute_stats(&*store).await
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Result<IndexStats, String>`, found 
+`Result<IndexingStats, String>`
+   |
+   = note: expected enum `std::result::Result<IndexStats, _>`
+              found enum `std::result::Result<IndexingStats, _>`
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:181:80
+    |
+181 |             for row in rows { results.push(crate::models::StashMemory::from(row?)); }
+    |                                                                             ---^ the trait 
+`From<rusqlite::Error>` is not implemented for `std::string::String`
+    |                                                                             |
+    |                                                                             this can't be annotated with `?` 
+because it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:204:76
+    |
+204 |         for row in rows { results.push(crate::models::StashMemory::from(row?)); }
+    |                                                                         ---^ the trait `From<rusqlite::Error>` 
+is not implemented for `std::string::String`
+    |                                                                         |
+    |                                                                         this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:256:36
+    |
+256 |             let (id, content) = row?;
+    |                                 ---^ the trait `From<rusqlite::Error>` is not implemented for 
+`std::string::String`
+    |                                 |
+    |                                 this can't be annotated with `?` because it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:279:74
+    |
+279 |         for row in rows { results.push(crate::models::StashFact::from(row?)); }
+    |                                                                       ---^ the trait `From<rusqlite::Error>` is 
+not implemented for `std::string::String`
+    |                                                                       |
+    |                                                                       this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0277]: `?` couldn't convert the error to `std::string::String`
+   --> src\local_memory.rs:296:74
+    |
+296 |         for row in rows { results.push(crate::models::StashGoal::from(row?)); }
+    |                                                                       ---^ the trait `From<rusqlite::Error>` is 
+not implemented for `std::string::String`
+    |                                                                       |
+    |                                                                       this can't be annotated with `?` because 
+it has type `Result<_, rusqlite::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` 
+trait
+    = help: the following other types implement trait `From<T>`:
+              `std::string::String` implements `From<&mut str>`
+              `std::string::String` implements `From<&std::string::String>`
+              `std::string::String` implements `From<&str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf16Str>`
+              `std::string::String` implements `From<&widestring::utfstr::Utf32Str>`
+              `std::string::String` implements `From<AssetKey>`
+              `std::string::String` implements `From<Box<str>>`
+              `std::string::String` implements `From<Cow<'_, str>>`
+            and 15 others
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `tracing_subscriber`
+  --> src\lib.rs:71:5
+   |
+71 |     tracing_subscriber::registry()
+   |     ^^^^^^^^^^^^^^^^^^ use of unresolved module or unlinked crate `tracing_subscriber`
+   |
+   = help: if you wanted to use a crate named `tracing_subscriber`, use `cargo add tracing_subscriber` to add it to 
+your `Cargo.toml`
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:121:1
+    |
+121 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_summary` is not `Send`
+    |
+   ::: src\lib.rs:150:38
+    |
+150 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+151 | |             mouse_move,
+152 | |             mouse_click,
+153 | |             mouse_drag,
+...   |
+202 | |             autonomy_status,
+203 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_summary` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:121:1
+    |
+121 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `memory_summary` is not `Send`
+    |
+   ::: src\lib.rs:150:38
+    |
+150 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+151 | |             mouse_move,
+152 | |             mouse_click,
+153 | |             mouse_drag,
+...   |
+202 | |             autonomy_status,
+203 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__memory_summary` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:157:1
+    |
+157 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `autonomy_status` is not `Send`
+    |
+   ::: src\lib.rs:150:38
+    |
+150 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+151 | |             mouse_move,
+152 | |             mouse_click,
+153 | |             mouse_drag,
+...   |
+202 | |             autonomy_status,
+203 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<rusqlite::inner_connection::InnerConnection>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__autonomy_status` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: future cannot be sent between threads safely
+   --> src\commands\memory.rs:157:1
+    |
+157 |   #[tauri::command]
+    |   ^^^^^^^^^^^^^^^^^ future returned by `autonomy_status` is not `Send`
+    |
+   ::: src\lib.rs:150:38
+    |
+150 |       builder = builder.invoke_handler(tauri::generate_handler![
+    |  ______________________________________-
+151 | |             mouse_move,
+152 | |             mouse_click,
+153 | |             mouse_drag,
+...   |
+202 | |             autonomy_status,
+203 | |         ]);
+    | |_________- in this macro invocation
+    |
+    = help: within `LocalMemoryClient`, the trait `Sync` is not implemented for 
+`RefCell<hashlink::lru_cache::LruCache<Arc<str>, rusqlite::raw_statement::RawStatement>>`
+    = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` instead
+note: future is not `Send` as this value is used across an await
+   --> src\local_memory.rs:325:54
+    |
+324 |     pub async fn get_summary(&self) -> Result<crate::models::MemorySummary, String> {
+    |                              ----- has type `&LocalMemoryClient` which is not `Send`
+325 |         let ns: Vec<String> = self.list_namespaces().await.unwrap_or_default();
+    |                                                      ^^^^^ await occurs here, with `&self` maybe used later
+note: required by a bound in `ResultFutureTag::future`
+   --> C:\Users\wiliwow\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\ipc\command.rs:314:42
+    |
+310 |     pub async fn future<T, E, F>(self, value: F) -> Result<InvokeResponseBody, InvokeError>
+    |                  ------ required by a bound in this associated function
+...
+314 |       F: Future<Output = Result<T, E>> + Send,
+    |                                          ^^^^ required by this bound in `ResultFutureTag::future`
+    = note: this error originates in the macro `__cmd__autonomy_status` which comes from the expansion of the macro 
+`tauri::generate_handler` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unused variable: `data`
+  --> src\rag_indexer.rs:45:13
+   |
+45 |         let data: HashMap<String, IndexedDocumentMetadata> = serde_json::from_str(&content)
+   |             ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+Some errors have detailed explanations: E0277, E0308, E0432, E0433, E0599, E0624.
+For more information about an error, try `rustc --explain E0277`.
+warning: `nakama` (lib) generated 1 warning
+error: could not compile `nakama` (lib) due to 42 previous errors; 1 warning emitted

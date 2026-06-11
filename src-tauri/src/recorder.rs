@@ -1,28 +1,23 @@
 use chrono::Local;
 use crossbeam_channel::tick;
 use rdev::{listen, Event, EventType};
-use screenshots::{image::EncodableLayout, Screen};
+use screenshots::Screen;
 use serde::Serialize;
 use std::{
     fs::{self, OpenOptions},
     io::Write,
     path::Path,
-    process::{Command, Stdio},
     sync::atomic::{AtomicBool, Ordering},
     thread,
     time::{Duration, Instant},
 };
+
 fn key_logger(event: Event, file_path: &Path) {
     if let EventType::KeyPress(key) = event.event_type {
-        let timestamp = Local::now(); // Get the current date and time
-
-        let mut file = OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&file_path)
-            .expect("Failed to open file");
-
-        writeln!(file, "Key {:?} pressed at {}", key, timestamp).expect("Failed to write to file");
+        let timestamp = Local::now();
+        let mut file = OpenOptions::new().create(true).append(true).open(file_path)
+            .expect("Failed to open keylog file");
+        writeln!(file, "Key {:?} pressed at {}", key, timestamp).expect("Failed to write keylog");
     }
 }
 
@@ -30,7 +25,7 @@ static RUNNING: AtomicBool = AtomicBool::new(false);
 
 #[derive(Serialize, Clone)]
 pub struct RecordingInfo {
-    pub video_path: String,
+    pub frames_dir: String,
     pub keylog_path: String,
     pub duration_seconds: u64,
 }
@@ -41,125 +36,49 @@ use std::sync::Mutex as StdMutex;
 static LAST_RECORDING: Lazy<StdMutex<Option<RecordingInfo>>> = Lazy::new(|| StdMutex::new(None));
 
 pub fn start_screen_recording() -> Result<(), String> {
-    // Check that `ffmpeg` is available before spawning the recording thread.
-    match Command::new("ffmpeg")
-        .arg("-version")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-    {
-        Ok(status) if status.success() => {}
-        Ok(_) => return Err("ffmpeg is present but returned non-zero when queried".into()),
-        Err(_) => {
-            return Err(
-                "ffmpeg not found in PATH. Install ffmpeg and ensure it's available in PATH".into(),
-            )
-        }
-    }
-
-    // Set running flag
     RUNNING.store(true, Ordering::SeqCst);
 
     thread::spawn(|| {
-        // Ensure recordings directory exists in project root
-        let recordings_path = Path::new("../recordings");
+        let recordings_path = Path::new("../recordings/frames");
         if !recordings_path.exists() {
-            fs::create_dir_all(recordings_path).expect("Failed to create recordings directory");
+            let _ = fs::create_dir_all(recordings_path);
         }
 
-        // Generate a unique base name for the recording
         let timestamp = Local::now().format("%Y%m%d_%H%M%S").to_string();
-        let video_file_path = recordings_path.join(format!("output_{}.mp4", timestamp));
-        let log_file_path = recordings_path.join(format!("output_{}.txt", timestamp));
+        let frames_dir = recordings_path.join(format!("rec_{}", timestamp));
+        let _ = fs::create_dir_all(&frames_dir);
 
-        // Start the keylogger in a separate thread
-        let keylog_path_clone = log_file_path.clone();
+        let keylog_path = Path::new("../recordings").join(format!("output_{}.txt", timestamp));
+
+        let keylog_path_clone = keylog_path.clone();
         thread::spawn(move || {
             listen(move |event: Event| {
                 key_logger(event, &keylog_path_clone);
-            })
-            .expect("Error listening for key events");
+            }).expect("Key listener error");
         });
 
-        // Screen recording logic
         let screens = Screen::all().map_err(|e| e.to_string()).unwrap();
         let primary = screens.first().ok_or("No screens available").unwrap();
-        let (width, height) = (primary.display_info.width, primary.display_info.height);
 
-        // Start FFmpeg process capturing video only (no audio for now)
-        // Video-only approach avoids ALSA audio issues
-        let mut ffmpeg = match Command::new("ffmpeg")
-            .args(&[
-                "-y",
-                "-f",
-                "rawvideo",
-                "-pix_fmt",
-                "bgra",
-                "-s",
-                &format!("{}x{}", width, height),
-                "-framerate",
-                "20",
-                "-i",
-                "-",
-                "-c:v",
-                "libx264",
-                "-preset",
-                "fast",
-                "-crf",
-                "23",
-                "-pix_fmt",
-                "yuv420p",
-                video_file_path.to_str().unwrap(),
-            ])
-            .stdin(Stdio::piped())
-            .stdout(Stdio::null())
-            .stderr(Stdio::piped())
-            .spawn()
-        {
-            Ok(p) => p,
-            Err(err) => {
-                eprintln!("Failed to start ffmpeg: {}", err);
-                return;
-            }
-        };
-
-        let mut stdin = ffmpeg.stdin.take().expect("Failed to open ffmpeg stdin");
-        let ticker = tick(Duration::from_millis(50)); // ~20 FPS
-
-        // Timer for recording duration
         let start_time = Instant::now();
-        let mut last_print = Instant::now();
+        let mut frame_idx: u64 = 0;
+        let ticker = tick(Duration::from_millis(500));
 
-        // Capture loop
         while RUNNING.load(Ordering::SeqCst) {
-            ticker.recv().unwrap(); // Wait for next tick
-            let image = match primary.capture() {
-                Ok(img) => img,
-                Err(err) => {
-                    eprintln!("Failed to capture screen: {}", err);
-                    break;
+            let _ = ticker.recv();
+            if let Ok(img) = primary.capture() {
+                let frame_path = frames_dir.join(format!("frame_{:06}.png", frame_idx));
+                if let Err(e) = img.save(&frame_path) {
+                    eprintln!("Failed to save frame: {}", e);
                 }
-            };
-
-            if let Err(err) = stdin.write_all(image.as_bytes()) {
-                eprintln!("Failed to write frame: {}", err);
-                break;
-            }
-            if last_print.elapsed().as_secs() >= 1 {
-                let elapsed = start_time.elapsed().as_secs();
-                println!("Recording duration: {} seconds", elapsed);
-                last_print = Instant::now();
+                frame_idx += 1;
             }
         }
 
-        drop(stdin);
-        let _ = ffmpeg.wait();
-
-        // Store last recording info
         let duration = start_time.elapsed().as_secs();
         let info = RecordingInfo {
-            video_path: video_file_path.to_string_lossy().into_owned(),
-            keylog_path: log_file_path.to_string_lossy().into_owned(),
+            frames_dir: frames_dir.to_string_lossy().into_owned(),
+            keylog_path: keylog_path.to_string_lossy().into_owned(),
             duration_seconds: duration,
         };
         if let Ok(mut lock) = LAST_RECORDING.lock() {
@@ -175,8 +94,5 @@ pub fn stop_screen_recording_signal() {
 }
 
 pub fn get_last_recording_info() -> Option<RecordingInfo> {
-    if let Ok(lock) = LAST_RECORDING.lock() {
-        return lock.clone();
-    }
-    None
+    LAST_RECORDING.lock().ok().and_then(|lock| lock.clone())
 }

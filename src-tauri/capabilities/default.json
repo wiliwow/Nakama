@@ -1,22 +1,22 @@
 {
-  "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "description": "Capabilities for the main window — mic recorder, FS, core window, dialog",
+  "windows": ["main"],
   "permissions": [
     "core:default",
+    "core:window:allow-create",
+    "core:window:allow-center",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-maximize",
+    "core:window:allow-set-title",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
+    "core:window:allow-start-dragging",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "fs:default",
     "opener:default",
-    "dialog:default",
-    {
-      "identifier": "fs:scope",
-      "allow": [
-        {
-          "path": "$HOME/Nakama/src-tauri/*"
-        }
-      ]
-    },
-    "fs:allow-read-text-file"
+    "mic-recorder:default"
   ]
 }

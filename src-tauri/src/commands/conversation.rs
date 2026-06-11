@@ -1,61 +1,76 @@
-use crate::conversation::{Conversation, ConversationMessage, ConversationStore};
+use crate::conversation::{Conversation, ConversationMessage};
+use crate::AppState;
 use chrono::Utc;
-use std::sync::Arc;
 use tauri::State;
-use tokio::sync::Mutex;
+use tracing::error;
 
 #[tauri::command]
 pub async fn conversation_create(
     title: String,
-    store: State<'_, Arc<Mutex<ConversationStore>>>,
+    app_state: State<'_, AppState>,
 ) -> Result<Conversation, String> {
-    let store = store.lock().await;
+    let store = app_state.inner().conversation_store.lock().unwrap();
     store
         .create_conversation(title)
-        .map_err(|e| format!("Failed to create conversation: {}", e))
+        .map_err(|e| {
+            error!(error = %e, "conversation_create: database error");
+            format!("Failed to create conversation: {}", e)
+        })
 }
 
 #[tauri::command]
 pub async fn conversation_load(
     id: i64,
-    store: State<'_, Arc<Mutex<ConversationStore>>>,
+    app_state: State<'_, AppState>,
 ) -> Result<Option<Conversation>, String> {
-    let store = store.lock().await;
+    let store = app_state.inner().conversation_store.lock().unwrap();
     store
         .load_conversation(id)
-        .map_err(|e| format!("Failed to load conversation: {}", e))
+        .map_err(|e| {
+            error!(error = %e, conversation_id = id, "conversation_load: database error");
+            format!("Failed to load conversation: {}", e)
+        })
 }
 
 #[tauri::command]
 pub async fn conversation_save(
     conversation: Conversation,
-    store: State<'_, Arc<Mutex<ConversationStore>>>,
+    app_state: State<'_, AppState>,
 ) -> Result<(), String> {
-    let store = store.lock().await;
+    let store = app_state.inner().conversation_store.lock().unwrap();
     store
         .save_conversation(&conversation)
-        .map_err(|e| format!("Failed to save conversation: {}", e))
+        .map_err(|e| {
+            error!(error = %e, conversation_id = ?conversation.id, "conversation_save: database error");
+            format!("Failed to save conversation: {}", e)
+        })
 }
 
 #[tauri::command]
 pub async fn conversation_list(
-    store: State<'_, Arc<Mutex<ConversationStore>>>,
+    app_state: State<'_, AppState>,
 ) -> Result<Vec<Conversation>, String> {
-    let store = store.lock().await;
+    let store = app_state.inner().conversation_store.lock().unwrap();
     store
         .list_conversations()
-        .map_err(|e| format!("Failed to list conversations: {}", e))
+        .map_err(|e| {
+            error!(error = %e, "conversation_list: database error");
+            format!("Failed to list conversations: {}", e)
+        })
 }
 
 #[tauri::command]
 pub async fn conversation_delete(
     id: i64,
-    store: State<'_, Arc<Mutex<ConversationStore>>>,
+    app_state: State<'_, AppState>,
 ) -> Result<(), String> {
-    let store = store.lock().await;
+    let store = app_state.inner().conversation_store.lock().unwrap();
     store
         .delete_conversation(id)
-        .map_err(|e| format!("Failed to delete conversation: {}", e))
+        .map_err(|e| {
+            error!(error = %e, conversation_id = id, "conversation_delete: database error");
+            format!("Failed to delete conversation: {}", e)
+        })
 }
 
 #[tauri::command]
@@ -63,9 +78,9 @@ pub async fn conversation_add_message(
     conversation_id: i64,
     role: String,
     content: String,
-    store: State<'_, Arc<Mutex<ConversationStore>>>,
+    app_state: State<'_, AppState>,
 ) -> Result<i64, String> {
-    let store = store.lock().await;
+    let store = app_state.inner().conversation_store.lock().unwrap();
     let message = ConversationMessage {
         id: None,
         role,
@@ -76,5 +91,8 @@ pub async fn conversation_add_message(
 
     store
         .add_message(conversation_id, message)
-        .map_err(|e| format!("Failed to add message: {}", e))
+        .map_err(|e| {
+            error!(error = %e, conversation_id, "conversation_add_message: database error");
+            format!("Failed to add message: {}", e)
+        })
 }

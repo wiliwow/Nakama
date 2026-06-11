@@ -4,10 +4,17 @@ mod commands;
 mod config;
 mod conversation;
 mod input_controller;
+mod local_memory;
+mod memory_agent;
+mod memory;
+mod models;
 mod rag_indexer;
 mod recorder;
 
+use std::fs;
 use tauri::Manager;
+use tracing::info;
+use tracing_subscriber::{fmt, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 use commands::fetch_files::fetch_files;
 use ai_companion::AICompanion;
 use command::get_message;
@@ -18,38 +25,75 @@ use commands::recording::{
     get_screen_recording_status, get_voice_recording_status, start_screen_recording,
     start_voice_recording, stop_screen_recording, stop_voice_recording,
 };
-#[cfg(feature = "swiftide_integration")]
+use commands::memory::{
+    memory_init, memory_remember, memory_recall, memory_query_facts,
+    memory_list_goals, memory_create_goal, memory_complete_goal,
+    memory_record_failure, memory_set_context, memory_summary,
+    memory_consolidate, memory_build_prompt, autonomy_status,
+};
 use commands::rag::{rag_index, rag_retrieve, rag_add_file, rag_health_check, rag_clear_index, rag_index_stats};
 use commands::conversation::{conversation_create, conversation_load, conversation_save, conversation_list, conversation_delete, conversation_add_message};
 use commands::execute_ai_with_actions::execute_ai_with_actions;
 use commands::computer_use::{execute_computer_tool, execute_text_editor_tool, execute_bash_tool};
 use input_controller::InputController;
+use rag_indexer::RAGIndex;
+use config::ConfigManager;
+use conversation::ConversationStore;
 use std::sync::Arc;
 use std::sync::Mutex;
 use tokio::sync::Mutex as TokioMutex;
-use rag_indexer::IndexMetadataStore;
-#[cfg(feature = "swiftide_integration")]
-use config::ConfigManager;
-use conversation::ConversationStore;
 
 pub struct AppState {
     #[allow(dead_code)]
     input: Mutex<InputController>,
-    #[cfg(feature = "swiftide_integration")]
     #[allow(dead_code)]
-    metadata_store: Arc<TokioMutex<IndexMetadataStore>>,
-    #[cfg(feature = "swiftide_integration")]
+    metadata_store: Arc<TokioMutex<RAGIndex>>,
     #[allow(dead_code)]
     config_manager: Arc<Mutex<ConfigManager>>,
+    #[allow(dead_code)]
+    memory_db: std::path::PathBuf,
     #[allow(dead_code)]
     conversation_store: Arc<Mutex<ConversationStore>>,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    // In release builds start recording and voice listening. Skip these heavy
-    // background tasks during development to avoid interfering with the dev
-    // workflow (FFmpeg or audio devices can cause crashes or exit the process).
+    let _ = dotenv::dotenv();
+    let filter = EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| EnvFilter::new("info"));
+
+    let log_dir = std::env::var("HOME")
+        .or_else(|_| std::env::var("USERPROFILE"))
+        .map(|h| std::path::PathBuf::from(h).join(".nakama_logs"))
+        .unwrap_or_else(|_| std::path::PathBuf::from(".nakama_logs"));
+
+    let file_appender = tracing_appender::rolling::daily(&log_dir, "nakama.log");
+
+    tracing_subscriber::registry()
+        .with(filter)
+        .with(
+            fmt::layer()
+                .with_writer(file_appender)
+                .json()
+                .with_file(true)
+                .with_line_number(true)
+                .with_target(true)
+                .with_current_span(true)
+                .with_span_events(tracing_subscriber::fmt::format::FmtSpan::CLOSE),
+        )
+        .with(
+            fmt::layer()
+                .with_writer(std::io::stderr)
+                .pretty()
+                .with_file(true)
+                .with_line_number(true)
+                .with_thread_ids(true)
+                .with_thread_names(true),
+        )
+        .init();
+
+    info!(version = env!("CARGO_PKG_VERSION"), "Nakama logger initialised");
+
     #[cfg(not(debug_assertions))]
     {
         if let Err(e) = recorder::start_screen_recording() {
@@ -57,64 +101,46 @@ pub fn run() {
         }
     }
 
-    // Initialize AI companion using Ollama model `deepseek:latest` by default
     let ai_companion = Arc::new(TokioMutex::new(AICompanion::new(
-        "deepseek-r1:1.5b".to_string(),
+        "".to_string(),
     )));
 
-    // Initialize metadata store for RAG indexing
-    #[cfg(feature = "swiftide_integration")]
+    let config_dir = std::env::var("HOME")
+        .or_else(|_| std::env::var("USERPROFILE"))
+        .map(|h| std::path::PathBuf::from(h).join(".nakama_config"))
+        .unwrap_or_else(|_| std::path::PathBuf::from(".nakama_config"));
+
     let metadata_store = {
-        let config_dir = std::env::var("HOME")
-            .map(|h| std::path::PathBuf::from(h).join(".nakama_config"))
-            .unwrap_or_else(|_| std::path::PathBuf::from(".nakama_config"));
-
+        let _ = fs::create_dir_all(&config_dir);
         Arc::new(TokioMutex::new(
-            IndexMetadataStore::new_sync(config_dir)
-                .expect("Failed to initialize metadata store")
+            RAGIndex::new(config_dir.join("rag_index"))
+                .expect("Failed to initialize RAG index")
         ))
     };
 
-    // Initialize config manager
-    #[cfg(feature = "swiftide_integration")]
-    let config_manager = {
-        let config_dir = std::env::var("HOME")
-            .map(|h| std::path::PathBuf::from(h).join(".nakama_config"))
-            .unwrap_or_else(|_| std::path::PathBuf::from(".nakama_config"));
+    let config_manager = Arc::new(Mutex::new(ConfigManager::new(config_dir.clone())));
 
-        Arc::new(Mutex::new(ConfigManager::new(config_dir)))
-    };
+    let memory_db = config_dir.join("memory.db");
+    let _ = fs::create_dir_all(memory_db.parent().unwrap_or(&config_dir));
 
-    // Initialize conversation store
     let conversation_store = {
-        let config_dir = std::env::var("HOME")
-            .map(|h| std::path::PathBuf::from(h).join(".nakama_config"))
-            .unwrap_or_else(|_| std::path::PathBuf::from(".nakama_config"));
-
-        Arc::new(Mutex::new(
-            ConversationStore::new(config_dir)
-                .expect("Failed to initialize conversation store")
-        ))
+        let store = ConversationStore::new(config_dir)
+            .expect("Failed to initialize conversation store");
+        Arc::new(Mutex::new(store))
     };
 
-    // build the tauri application but do not run it yet - running consumes the builder
     let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_mic_recorder::init())
         .manage(AppState {
             input: Mutex::new(InputController::new()),
-            #[cfg(feature = "swiftide_integration")]
             metadata_store,
-            #[cfg(feature = "swiftide_integration")]
             config_manager: config_manager.clone(),
+            memory_db,
             conversation_store,
         })
         .manage(ai_companion);
-
-    #[cfg(feature = "swiftide_integration")]
-    {
-        builder = builder.manage(config_manager.clone());
-    }
 
     builder = builder.invoke_handler(tauri::generate_handler![
             mouse_move,
@@ -146,25 +172,31 @@ pub fn run() {
             conversation_list,
             conversation_delete,
             conversation_add_message,
-            #[cfg(feature = "swiftide_integration")]
             rag_index,
-            #[cfg(feature = "swiftide_integration")]
             rag_retrieve,
-            #[cfg(feature = "swiftide_integration")]
             rag_add_file,
-            #[cfg(feature = "swiftide_integration")]
             rag_health_check,
-            #[cfg(feature = "swiftide_integration")]
             rag_clear_index,
-            #[cfg(feature = "swiftide_integration")]
             rag_index_stats,
             execute_ai_with_actions,
             execute_computer_tool,
             execute_text_editor_tool,
             execute_bash_tool,
+            memory_init,
+            memory_remember,
+            memory_recall,
+            memory_query_facts,
+            memory_list_goals,
+            memory_create_goal,
+            memory_complete_goal,
+            memory_record_failure,
+            memory_set_context,
+            memory_summary,
+            memory_consolidate,
+            memory_build_prompt,
+            autonomy_status,
         ]);
 
-    // In development builds, open the webview devtools automatically to inspect UI errors.
     #[cfg(debug_assertions)]
     {
         builder = builder.setup(|app| {
@@ -175,7 +207,6 @@ pub fn run() {
         });
     }
 
-    // now run the application consuming the builder
     builder
         .run(tauri::generate_context!())
         .expect("error while running Tauri application");

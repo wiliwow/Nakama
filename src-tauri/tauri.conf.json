@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.nakama.app",
   "build": {
-    "beforeDevCommand": "pnpm dev",
+    "beforeDevCommand": "pnpm dev:no-rag",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
@@ -19,7 +19,31 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http://localhost:*"
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http://localhost:*",
+      "capabilities": [
+        {
+          "identifier": "main-capability",
+          "description": "Main app capability — mic recorder, FS, core window",
+          "windows": ["main"],
+          "permissions": [
+            "core:default",
+            "core:window:allow-create",
+            "core:window:allow-center",
+            "core:window:allow-close",
+            "core:window:allow-minimize",
+            "core:window:allow-maximize",
+            "core:window:allow-set-title",
+            "core:window:allow-set-size",
+            "core:window:allow-set-position",
+            "core:window:allow-start-dragging",
+            "dialog:allow-open",
+            "dialog:allow-save",
+            "fs:default",
+            "opener:default",
+            "mic-recorder:default"
+          ]
+        }
+      ]
     }
   },
   "bundle": {
@@ -33,5 +57,4 @@
       "icons/icon.ico"
     ]
   }
- 
 }

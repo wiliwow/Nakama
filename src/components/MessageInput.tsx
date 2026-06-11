@@ -31,7 +31,10 @@ const MessageInput: React.FC<Props> = ({ onSend, disabled, onFilesSelected, isLi
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();   // Prevent a newline from being added
-      handleSend(e);        // Submit the form
+      if (value.trim()) {
+        onSend(value.trim());
+        setValue("");
+      }
     }
     // If Shift+Enter is pressed, the default behavior (newline) is preserved
   };

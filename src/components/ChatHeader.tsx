@@ -9,6 +9,9 @@ interface ChatHeaderProps {
   onNewConversation: () => void;
   onToggleConversationList: () => void;
   onToggleVoiceChat: (checked: boolean) => void;
+  onToggleMemory: () => void;
+  memoryCount: { episodes: number; facts: number; goals: number };
+  localMemoryAvailable: boolean;
   currentConversationTitle?: string;
 }
 
@@ -18,11 +21,13 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   onNewConversation,
   onToggleConversationList,
   onToggleVoiceChat,
-  currentConversationTitle
+  onToggleMemory,
+  memoryCount,
+  localMemoryAvailable,
+  currentConversationTitle,
 }) => {
   return (
     <div className="flex flex-col gap-3 border-b border-slate-800/30 bg-gradient-to-b from-slate-900/50 to-slate-950/30 backdrop-blur-sm">
-      {/* App title bar */}
       <div className="px-4 pt-4 pb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-700 shadow-lg">
@@ -36,7 +41,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </div>
         </div>
 
-        {/* Right side controls */}
         <div className="flex items-center gap-2">
           <Badge count={indexedFilesCount} variant="success" />
           <div className="flex items-center gap-2 pl-2 border-l border-slate-700/50">
@@ -51,10 +55,27 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
               onChange={onToggleVoiceChat}
             />
           </div>
+
+          <button
+            onClick={onToggleMemory}
+            className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-1.5 ${
+              localMemoryAvailable
+                ? "bg-blue-600/20 text-blue-300 hover:bg-blue-600/30 border border-blue-700/50"
+                : "bg-slate-700 text-slate-400 cursor-not-allowed"
+            }`}
+            title="Memory"
+          >
+            <span className="text-base">🧠</span>
+            Memory
+            {localMemoryAvailable && memoryCount.episodes > 0 && (
+              <span className="bg-blue-500 text-white text-[10px] px-1 rounded-full">
+                {memoryCount.episodes}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Action bar */}
       <div className="px-4 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button variant="primary" size="sm" onClick={onNewConversation}>

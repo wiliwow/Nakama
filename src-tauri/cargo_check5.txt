@@ -1,0 +1,159 @@
+﻿cargo :     Checking nakama v0.1.0 (C:\Users\wiliwow\Desktop\Nakama\src-tauri)
+Au caractère Ligne:1 : 59
++ ... "C:\Users\wiliwow\Desktop\Nakama\src-tauri"; cargo check 2>&1 | Out-F ...
++                                                  ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking na...kama\src-tauri):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: unused import: `crate::rag_indexer::IndexStats`
+  --> src\commands\rag.rs:11:9
+   |
+11 | pub use crate::rag_indexer::IndexStats;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `tracing::warn`
+ --> src\local_memory.rs:7:5
+  |
+7 | use tracing::warn;
+  |     ^^^^^^^^^^^^^
+
+warning: unused variable: `model`
+   --> src\ai_companion.rs:199:9
+    |
+199 |         model: String,
+    |         ^^^^^ help: if this is intentional, prefix it with an underscore: `_model`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `query_lower`
+   --> src\local_memory.rs:159:13
+    |
+159 |         let query_lower = query.to_lowercase();
+    |             ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_query_lower`
+
+warning: unused variable: `score`
+  --> src\memory.rs:47:29
+   |
+47 |                 if let Some(score) = p.score {
+   |                             ^^^^^ help: if this is intentional, prefix it with an underscore: `_score`
+
+warning: unused variable: `data`
+  --> src\rag_indexer.rs:45:13
+   |
+45 |         let data: HashMap<String, IndexedDocumentMetadata> = serde_json::from_str(&content)
+   |             ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
+
+warning: field `finish_reason` is never read
+  --> src\ai_companion.rs:35:9
+   |
+33 | struct ChatChoice {
+   |        ---------- field in this struct
+34 |     pub delta: StreamDelta,
+35 |     pub finish_reason: Option<String>,
+   |         ^^^^^^^^^^^^^
+   |
+   = note: `ChatChoice` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored 
+during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: methods `save` and `config_path` are never used
+  --> src\config.rs:48:12
+   |
+31 | impl ConfigManager {
+   | ------------------ methods in this implementation
+...
+48 |     pub fn save(&self, config: &AppConfig) -> Result<(), String> {
+   |            ^^^^
+...
+56 |     pub fn config_path(&self) -> &PathBuf {
+   |            ^^^^^^^^^^^
+
+warning: field `fts` is never read
+  --> src\local_memory.rs:74:5
+   |
+72 | pub struct LocalMemoryClient {
+   |            ----------------- field in this struct
+73 |     conn: Connection,
+74 |     fts: Arc<RwLock<HashMap<String, Vec<i64>>>>,
+   |     ^^^
+
+warning: associated items `new_in_memory`, `get_context`, and `clear_context` are never used
+   --> src\local_memory.rs:87:12
+    |
+ 77 | impl LocalMemoryClient {
+    | ---------------------- associated items in this implementation
+...
+ 87 |     pub fn new_in_memory() -> Result<Self, String> {
+    |            ^^^^^^^^^^^^^
+...
+190 |     pub fn get_context(&self, namespace: &str) -> Result<Option<String>, String> {
+    |            ^^^^^^^^^^^
+...
+197 |     pub fn clear_context(&self, namespace: &str) -> Result<(), String> {
+    |            ^^^^^^^^^^^^^
+
+warning: associated items `new_in_memory`, `remember_conversation_turn`, `remember_action`, `remember_preference`, and 
+`remember_system_event` are never used
+  --> src\memory_agent.rs:15:12
+   |
+10 | impl MemoryAgent {
+   | ---------------- associated items in this implementation
+...
+15 |     pub fn new_in_memory() -> Self {
+   |            ^^^^^^^^^^^^^
+...
+19 |     pub fn remember_conversation_turn(&self, role: &str, content: &str) -> Result<i64, String> {
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+24 |     pub fn remember_action(&self, action_type: &str, result: &str) -> Result<i64, String> {
+   |            ^^^^^^^^^^^^^^^
+...
+33 |     pub fn remember_preference(&self, preference: &str, value: &str) -> Result<i64, String> {
+   |            ^^^^^^^^^^^^^^^^^^^
+...
+38 |     pub fn remember_system_event(&self, event: &str, details: Option<&str>) -> Result<i64, String> {
+   |            ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `MemorySummary` is never constructed
+ --> src\memory.rs:4:12
+  |
+4 | pub struct MemorySummary {
+  |            ^^^^^^^^^^^^^
+
+warning: struct `StashEpisode` is never constructed
+ --> src\models.rs:5:12
+  |
+5 | pub struct StashEpisode {
+  |            ^^^^^^^^^^^^
+
+warning: struct `WorkingContext` is never constructed
+  --> src\models.rs:54:12
+   |
+54 | pub struct WorkingContext {
+   |            ^^^^^^^^^^^^^^
+
+warning: associated items `new_in_memory`, `record_indexed`, and `get` are never used
+  --> src\rag_indexer.rs:32:12
+   |
+24 | impl RAGIndex {
+   | ------------- associated items in this implementation
+...
+32 |     pub fn new_in_memory() -> Self {
+   |            ^^^^^^^^^^^^^
+...
+62 |     pub async fn record_indexed(
+   |                  ^^^^^^^^^^^^^^
+...
+84 |     pub async fn get(&self, doc_id: &str) -> Result<Option<IndexedDocumentMetadata>, String> {
+   |                  ^^^
+
+warning: function `compute_hash` is never used
+   --> src\rag_indexer.rs:100:8
+    |
+100 | pub fn compute_hash(content: &str) -> String {
+    |        ^^^^^^^^^^^^
+
+warning: `nakama` (lib) generated 16 warnings (run `cargo fix --lib -p nakama` to apply 6 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 39.02s

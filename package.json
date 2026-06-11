@@ -5,9 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:no-rag": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "tauri:no-rag": "cargo run --no-default-features && vite",
+    "dev:full": "pnpm tauri dev",
+    "dev:setup": "node scripts/setup-simple.cjs && pnpm tauri dev",
+    "dev:no-rag:setup": "node scripts/setup-simple.cjs && pnpm tauri:no-rag",
+    "setup": "node scripts/setup-simple.cjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
