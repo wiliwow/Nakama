@@ -84,6 +84,7 @@ export interface Message {
   timestamp?: string;
   files?: { name: string; content: string }[];
   screenshots?: ScreenCapture[];
+  reasoning?: string;
 }
 
 export interface AutomationMessage {

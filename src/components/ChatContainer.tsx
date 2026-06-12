@@ -66,6 +66,8 @@ const ChatContainer: React.FC = () => {
     goals: 0,
   });
   const [localMemoryAvailable, setLocalMemoryAvailable] = useState<boolean | null>(null);
+  const [ragAvailable, setRagAvailable] = useState<boolean | null>(null);
+  const [isThinking, setIsThinking] = useState(false);
 
   const { recall, remember } = useMemoryRecall({
     localMemoryAvailable: localMemoryAvailable ?? false,
@@ -74,6 +76,9 @@ const ChatContainer: React.FC = () => {
 
   const messagesRef = useRef<Message[]>(messages);
   const isStreamingRef = useRef(false);
+  const streamingTextRef = useRef("");
+  const thinkingTextRef = useRef("");
+  const streamingMsgIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     messagesRef.current = messages;
@@ -99,6 +104,18 @@ const ChatContainer: React.FC = () => {
       }
     };
     initMemory();
+  }, []);
+
+  useEffect(() => {
+    const checkRag = async () => {
+      try {
+        const health = await invoke<{ llm_ok: boolean }>("rag_health_check");
+        setRagAvailable(health.llm_ok);
+      } catch {
+        setRagAvailable(false);
+      }
+    };
+    checkRag();
   }, []);
 
   const saveDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -273,17 +290,29 @@ const ChatContainer: React.FC = () => {
   }, [messages, currentConversation, showToast]);
 
   const handleStreamChunk = useCallback((chunk: string) => {
-    setMessages((msgs) => {
-      const copy = [...msgs];
-      const lastIdx = copy.length - 1;
-      if (lastIdx >= 0 && copy[lastIdx].sender === "ai") {
-        copy[lastIdx] = {
-          ...copy[lastIdx],
-          text: (copy[lastIdx].text ?? "") + (chunk ?? ""),
-        };
-      }
-      return copy;
-    });
+    if (streamingMsgIdRef.current == null) {
+      const id = Date.now();
+      streamingMsgIdRef.current = id;
+      setMessages((msgs) => [
+        ...msgs,
+        {
+          id,
+          sender: "ai" as const,
+          text: chunk,
+          reasoning: "",
+        },
+      ]);
+      streamingTextRef.current = chunk;
+    } else {
+      streamingTextRef.current += chunk;
+      setMessages((msgs) =>
+        msgs.map((m) =>
+          m.id === streamingMsgIdRef.current
+            ? { ...m, text: m.text + chunk }
+            : m
+        )
+      );
+    }
   }, []);
 
   const handleStreamError = useCallback(
@@ -302,8 +331,24 @@ const ChatContainer: React.FC = () => {
   );
 
   const handleStreamDone = useCallback(async () => {
-    setLoading(false);
+    if (streamingMsgIdRef.current != null) {
+      setMessages((msgs) =>
+        msgs.map((m) =>
+          m.id === streamingMsgIdRef.current
+            ? {
+                ...m,
+                text: streamingTextRef.current,
+                reasoning: thinkingTextRef.current,
+              }
+            : m
+        )
+      );
+    }
     isStreamingRef.current = false;
+    setLoading(false);
+    streamingMsgIdRef.current = null;
+    streamingTextRef.current = "";
+    thinkingTextRef.current = "";
     try {
       await saveCurrentConversationExplicit();
     } catch (err) {
@@ -316,7 +361,6 @@ const ChatContainer: React.FC = () => {
       if (!text.trim() || loading) return;
       const userMessage = text.trim();
 
-      setMessages((msgs) => [...msgs, { sender: "user", text: userMessage }]);
       setLoading(true);
       isStreamingRef.current = true;
 
@@ -328,6 +372,8 @@ const ChatContainer: React.FC = () => {
           return;
         }
       }
+
+      setMessages((msgs) => [...msgs, { sender: "user", text: userMessage }]);
 
       try {
         await remember("user", userMessage);
@@ -362,7 +408,7 @@ const ChatContainer: React.FC = () => {
           });
         }
 
-        if (fileIndexer.indexedCount > 0) {
+        if (ragAvailable && fileIndexer.indexedCount > 0) {
           try {
             const retrieved = await invoke<RetrievedPassage[]>(
               "rag_retrieve",
@@ -422,10 +468,27 @@ const ChatContainer: React.FC = () => {
           }
         );
 
+        const unlistenThinkingStart = await listen("ai-thinking-start", () => {
+          setIsThinking(true);
+          thinkingTextRef.current = "";
+        });
+
+        const unlistenThinkingUpdate = await listen<string>("ai-thinking-update", (event) => {
+          const delta = event.payload ?? "";
+          thinkingTextRef.current += delta;
+        });
+
+        const unlistenThinkingDone = await listen("ai-thinking-done", () => {
+          setIsThinking(false);
+        });
+
         await listen<void>("ai-stream-done", async () => {
           await handleStreamDone();
           unlistenChunk();
           unlistenError();
+          unlistenThinkingStart();
+          unlistenThinkingUpdate();
+          unlistenThinkingDone();
         });
 
         const imageB64 =
@@ -498,6 +561,15 @@ const ChatContainer: React.FC = () => {
 
           <div className="flex-1 flex flex-col md:flex-row min-h-0">
             <div className="flex-1 flex flex-col min-h-0">
+              {isThinking && (
+                <div className="flex items-center gap-2 px-4 py-2 text-amber-400/80 text-sm">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                  </span>
+                  Thinking...
+                </div>
+              )}
               <MessageList messages={messages} />
 
               <FileStager

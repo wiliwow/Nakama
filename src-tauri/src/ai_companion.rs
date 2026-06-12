@@ -41,6 +41,22 @@ struct StreamDelta {
 }
 
 #[derive(Clone, Debug, serde::Deserialize)]
+struct NonStreamingMessage {
+    pub content: String,
+    pub reasoning: Option<String>,
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
+struct NonStreamingChoice {
+    pub message: NonStreamingMessage,
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
+struct NonStreamingResponse {
+    pub choices: Vec<NonStreamingChoice>,
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
 struct ChatResponse {
     pub choices: Vec<ChatChoice>,
 }
@@ -117,15 +133,22 @@ impl AICompanion {
             })
             .collect();
 
+        let vision_models = ["llava", "bakllava", "moondream", "minicpm-v", "llama3.2-vision", "minicpm"];
+        let supports_vision = vision_models.iter().any(|m| self.model.to_lowercase().contains(m));
+
         if let Some(raw) = image_b64 {
-            let b64 = if raw.starts_with("data:") { strip_data_url(raw) } else { raw };
-            msgs.push(json!({
-                "role": "user",
-                "content": [
-                    { "type": "text", "text": prompt },
-                    { "type": "image_url", "image_url": { "url": format!("data:image/png;base64,{}", b64) } }
-                ]
-            }));
+            if supports_vision {
+                let b64 = if raw.starts_with("data:") { strip_data_url(raw) } else { raw };
+                msgs.push(json!({
+                    "role": "user",
+                    "content": [
+                        { "type": "text", "text": prompt },
+                        { "type": "image_url", "image_url": { "url": format!("data:image/png;base64,{}", b64) } }
+                    ]
+                }));
+            } else {
+                msgs.push(json!({ "role": "user", "content": prompt }));
+            }
         } else {
             msgs.push(json!({ "role": "user", "content": prompt }));
         }
@@ -187,15 +210,14 @@ impl AICompanion {
         }
 
         let body_text = resp.text().await.unwrap_or_default();
-        let parsed: ChatResponse = serde_json::from_str(&body_text)
+        let parsed: NonStreamingResponse = serde_json::from_str(&body_text)
             .map_err(|e| {
                 warn!(error = %e, "LLM: JSON parse failed");
                 format!("LLM JSON parse error: {} — raw body: {}", e,
                     body_text.chars().take(500).collect::<String>())
             })?;
 
-
-        Ok(parsed.choices.into_iter().next().and_then(|c| c.delta.content).unwrap_or_default())
+        Ok(parsed.choices.into_iter().next().map(|c| c.message.content).unwrap_or_default())
     }
 
     pub async fn stream_chat_with_images(
@@ -211,6 +233,7 @@ impl AICompanion {
             let _ = window.emit("ai-stream-done", ());
             return Ok(());
         }
+        let _ = window.emit("ai-thinking-start", ());
         let messages = self.build_chat_messages(prompt, history, image_b64);
         let resp = self.post_chat(messages, true).await?;
 
@@ -232,6 +255,7 @@ impl AICompanion {
             if line.starts_with("data: ") {
                 let data = &line[6..];
                 if data == "[DONE]" {
+                    let _ = window.emit("ai-thinking-done", ());
                     let _ = window.emit("ai-stream-done", ());
                     return Ok(());
                 }
@@ -247,12 +271,16 @@ impl AICompanion {
                     if let Some(content) = val["choices"][0]["delta"]["content"].as_str() {
                         let _ = window.emit("ai-stream-chunk", content.to_string());
                     }
+                    if let Some(reasoning) = val["choices"][0]["delta"]["reasoning"].as_str() {
+                        let _ = window.emit("ai-thinking-update", reasoning.to_string());
+                    }
                 }
             } else if !line.starts_with(":") {
                 warn!(raw = %line, "LLM: unexpected line in streaming");
             }
         }
 
+        let _ = window.emit("ai-thinking-done", ());
         let _ = window.emit("ai-stream-done", ());
         Ok(())
     }
@@ -276,11 +304,9 @@ impl AICompanion {
         }
 
         let body_text = resp.text().await.unwrap_or_default();
-        let parsed: ChatResponse = serde_json::from_str(&body_text)
-            .map_err(|e| format!("LLM JSON parse error: {} — raw body: {}", e, 
-                body_text.chars().take(500).collect::<String>()))?;
+        let parsed: NonStreamingResponse = serde_json::from_str(&body_text)
+            .map_err(|e| format!("LLM JSON parse error: {}", e))?;
+        Ok(parsed.choices.into_iter().next().map(|c| c.message.content).unwrap_or_default())
 
-
-        Ok(parsed.choices.into_iter().next().and_then(|c| c.delta.content).unwrap_or_default())
-    }
+    }    
 }

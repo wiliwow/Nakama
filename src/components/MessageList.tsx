@@ -122,6 +122,13 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
               </div>
             )}
 
+            {msg.reasoning && msg.reasoning.trim().length > 0 && (
+              <div className="mb-3 rounded-xl border border-slate-700/60 bg-slate-800/40 px-4 py-3 text-sm text-slate-400 italic whitespace-pre-wrap">
+                <div className="text-xs font-semibold text-slate-500 mb-1 not-italic">Thinking</div>
+                {msg.reasoning}
+              </div>
+            )}
+
             <div className="prose prose-invert max-w-none break-words">
               {msg.sender === "system" ? (
                 // System messages like recalled memories - rendered as plain styled text
